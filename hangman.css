@@ -1,0 +1,452 @@
+/* Base styles for the body to set up the neon-themed background and font */
+body {
+    background: linear-gradient(135deg, #0d0015, #1a0033); /* Dark purple gradient background */
+    font-family: 'Orbitron', sans-serif; /* Futuristic font for neon aesthetic */
+    color: #fff; /* White text color */
+    min-height: 100vh; /* Ensure body takes full viewport height */
+    margin: 0; /* Remove default margins */
+    padding: 0; /* Remove default padding */
+    overflow: hidden; /* Prevent scrolling during loading animation */
+}
+
+/* Neon text effect for titles and important text */
+.neon-text {
+    text-shadow: 
+        0 0 5px #00ccff, 
+        0 0 10px #00ccff, 
+        0 0 20px #00ccff, 
+        0 0 40px #00ccff; /* Multiple layers of cyan glow */
+    color: #00ccff; /* Cyan text color */
+    font-weight: 700; /* Bold text */
+    font-size: 2rem; /* Default font size */
+}
+
+/* Responsive adjustments for neon text on smaller screens */
+@media (max-width: 576px) {
+    .neon-text { font-size: 1.5rem; } /* Smaller font on mobile */
+}
+@media (min-width: 768px) {
+    .neon-text { font-size: 2.5rem; } /* Larger font on larger screens */
+}
+
+/* Neon subtext effect for secondary text */
+.neon-subtext {
+    text-shadow: 
+        0 0 5px #ff00ff, 
+        0 0 10px #ff00ff; /* Magenta glow */
+    color: #ff00ff; /* Magenta text color */
+    font-size: 1rem; /* Default font size */
+}
+
+/* Responsive adjustments for neon subtext */
+@media (max-width: 576px) {
+    .neon-subtext { font-size: 0.9rem; } /* Slightly smaller on mobile */
+}
+
+/* Neon button styles for interactive elements */
+.neon-btn {
+    background: #00ccff; /* Cyan background */
+    border: none; /* No border */
+    color: #000; /* Black text for contrast */
+    padding: 10px 20px; /* Padding for button size */
+    text-transform: uppercase; /* Uppercase text for futuristic feel */
+    box-shadow: 
+        0 0 10px #00ccff, 
+        0 0 20px #00ccff; /* Cyan glow effect */
+    transition: all 0.4s ease; /* Smooth transitions for hover effects */
+    font-size: 0.9rem; /* Default font size */
+}
+
+/* Hover effect for neon buttons */
+.neon-btn:hover {
+    background: #ff00ff; /* Change to magenta on hover */
+    color: #fff; /* White text for contrast */
+    box-shadow: 
+        0 0 15px #ff00ff, 
+        0 0 30px #ff00ff; /* Magenta glow */
+    transform: translateY(-3px); /* Slight lift effect */
+}
+
+/* Responsive adjustments for buttons */
+@media (max-width: 576px) {
+    .neon-btn { 
+        padding: 8px 15px; /* Smaller padding on mobile */
+        font-size: 0.8rem; /* Smaller font size */
+    }
+}
+
+/* Keyboard button styles for letter guesses */
+.key-btn {
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+    border: 2px solid #00ccff; /* Cyan border */
+    color: #fff; /* White text */
+    width: 40px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    display: flex; /* Center content */
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    box-shadow: 0 0 10px #00ccff; /* Cyan glow */
+    transition: all 0.3s ease; /* Smooth transitions for hover effects */
+    font-size: 1rem; /* Font size for letters */
+}
+
+/* Hover effect for keyboard buttons */
+.key-btn:hover:not(.disabled) {
+    background: #ff00ff; /* Magenta background on hover */
+    border-color: #ff00ff; /* Magenta border */
+    box-shadow: 0 0 15px #ff00ff; /* Magenta glow */
+    transform: scale(1.1); /* Slight scale-up effect */
+}
+
+/* Disabled state for keyboard buttons */
+.key-btn.disabled {
+    background: rgba(0, 0, 0, 0.9); /* Darker background */
+    border-color: #ff0000; /* Red border to indicate disabled */
+    box-shadow: 0 0 5px #ff0000; /* Red glow */
+    cursor: not-allowed; /* Not-allowed cursor */
+}
+
+/* Responsive adjustments for keyboard buttons */
+@media (max-width: 576px) {
+    .key-btn {
+        width: 35px; /* Smaller width on mobile */
+        height: 35px; /* Smaller height on mobile */
+        font-size: 0.9rem; /* Smaller font size */
+    }
+}
+
+/* Sidebar styles for the navigation and periodic table area */
+.sidebar {
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+    border-left: 2px solid #00ccff; /* Cyan border on the left */
+    height: 100vh; /* Full viewport height */
+    position: fixed; /* Fixed position on the right */
+    right: 0; /* Align to the right edge */
+    top: 0; /* Align to the top */
+    box-shadow: -5px 0 15px #00ccff; /* Cyan shadow on the left */
+}
+
+/* Responsive adjustments for the sidebar on smaller screens */
+@media (max-width: 991px) {
+    .sidebar {
+        position: static; /* Remove fixed positioning */
+        height: auto; /* Auto height to fit content */
+        border-left: none; /* Remove left border */
+        border-top: 2px solid #00ccff; /* Add top border instead */
+        box-shadow: 0 -5px 15px #00ccff; /* Shadow above the sidebar */
+    }
+}
+
+/* Portal overlay for loading and transition animations */
+.portal-overlay {
+    position: fixed; /* Cover the entire screen */
+    top: 0; /* Align to top */
+    left: 0; /* Align to left */
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    background: rgba(0, 0, 0, 0.9); /* Dark semi-transparent background */
+    display: flex; /* Center content */
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+/* Portal circle for the loading animation */
+.portal-circle {
+    width: 15vw; /* Proportional width */
+    height: 15vw; /* Proportional height */
+    max-width: 200px; /* Maximum size */
+    max-height: 200px; /* Maximum size */
+    min-width: 150px; /* Minimum size */
+    min-height: 150px; /* Minimum size */
+    background: radial-gradient(circle, #00ff00, #00cc00, #009900); /* Green gradient for portal effect */
+    border-radius: 50%; /* Circular shape */
+    box-shadow: 
+        0 0 20px #00ff00, 
+        0 0 40px #00ff00, 
+        0 0 60px #00ff00, 
+        0 0 100px #00ff00; /* Green glow effect */
+    position: relative; /* For pseudo-element positioning */
+    overflow: hidden; /* Hide overflow from pseudo-element */
+}
+
+/* Swirling effect inside the portal circle */
+.portal-circle::before {
+    content: ''; /* Empty pseudo-element */
+    position: absolute; /* Position within the circle */
+    top: -50%; /* Offset above the circle */
+    left: -50%; /* Offset to the left */
+    width: 200%; /* Double the size of the circle */
+    height: 200%; /* Double the size of the circle */
+    background: conic-gradient(#00ff00, #00cc00, #009900, #00cc00, #00ff00); /* Conic gradient for swirl */
+    animation: swirl 2s linear infinite; /* Continuous swirling animation */
+}
+
+/* Portal box for navigation buttons */
+.portal-box {
+    background: rgba(0, 0, 0, 0.9); /* Dark semi-transparent background */
+    border: 2px solid #ff00ff; /* Magenta border */
+    padding: 15px; /* Internal padding */
+    box-shadow: 0 0 20px #ff00ff; /* Magenta glow */
+    border-radius: 10px; /* Rounded corners */
+    transition: all 0.3s ease; /* Smooth transitions for hover effects */
+}
+
+/* Hover effect for the portal box */
+.portal-box:hover {
+    box-shadow: 
+        0 0 30px #00ccff, 
+        0 0 50px #00ccff; /* Cyan glow on hover */
+    transform: scale(1.05); /* Slight scale-up effect */
+}
+
+/* Portal button styles (buttons inside the portal box) */
+.portal-btn {
+    background: #ff00ff; /* Magenta background */
+    box-shadow: 0 0 15px #ff00ff; /* Magenta glow */
+}
+
+/* Hover effect for portal buttons */
+.portal-btn:hover {
+    background: #00ccff; /* Cyan background on hover */
+    box-shadow: 0 0 20px #00ccff; /* Cyan glow */
+}
+
+/* Element archive container for the periodic table */
+.element-archive {
+    background: rgba(0, 0, 0, 0.9); /* Dark semi-transparent background */
+    border: 2px solid #00ff00; /* Green border */
+    padding: 15px; /* Internal padding */
+    box-shadow: 0 0 20px #00ff00; /* Green glow */
+    border-radius: 10px; /* Rounded corners */
+}
+
+/* Periodic table styles to mimic the real periodic table layout */
+.periodic-table {
+    display: grid; /* Use CSS grid for layout */
+    grid-template-columns: repeat(18, 30px); /* 18 columns for periodic table */
+    grid-template-rows: repeat(3, 30px); /* 3 rows for the first 18 elements */
+    gap: 2px; /* Small gap between elements */
+    max-width: 100%; /* Prevent overflow */
+    overflow-x: auto; /* Allow horizontal scrolling on small screens */
+}
+
+/* Specific positions for each element to mimic the periodic table */
+.element[data-index="0"] { grid-column: 1; grid-row: 1; } /* H (Hydrogen) */
+.element[data-index="1"] { grid-column: 18; grid-row: 1; } /* He (Helium) */
+.element[data-index="2"] { grid-column: 1; grid-row: 2; } /* Li (Lithium) */
+.element[data-index="3"] { grid-column: 2; grid-row: 2; } /* Be (Beryllium) */
+.element[data-index="4"] { grid-column: 13; grid-row: 2; } /* B (Boron) */
+.element[data-index="5"] { grid-column: 14; grid-row: 2; } /* C (Carbon) */
+.element[data-index="6"] { grid-column: 15; grid-row: 2; } /* N (Nitrogen) */
+.element[data-index="7"] { grid-column: 16; grid-row: 2; } /* O (Oxygen) */
+.element[data-index="8"] { grid-column: 17; grid-row: 2; } /* F (Fluorine) */
+.element[data-index="9"] { grid-column: 18; grid-row: 2; } /* Ne (Neon) */
+.element[data-index="10"] { grid-column: 1; grid-row: 3; } /* Na (Sodium) */
+.element[data-index="11"] { grid-column: 2; grid-row: 3; } /* Mg (Magnesium) */
+.element[data-index="12"] { grid-column: 13; grid-row: 3; } /* Al (Aluminum) */
+.element[data-index="13"] { grid-column: 14; grid-row: 3; } /* Si (Silicon) */
+.element[data-index="14"] { grid-column: 15; grid-row: 3; } /* P (Phosphorus) */
+.element[data-index="15"] { grid-column: 16; grid-row: 3; } /* S (Sulfur) */
+.element[data-index="16"] { grid-column: 17; grid-row: 3; } /* Cl (Chlorine) */
+.element[data-index="17"] { grid-column: 18; grid-row: 3; } /* Ar (Argon) */
+.element[data-index="18"] { grid-column: 1; grid-row: 4; } /* K (Potassium) */
+.element[data-index="19"] { grid-column: 2; grid-row: 4; } /* Ca (Calcium) */
+.element[data-index="20"] { grid-column: 3; grid-row: 4; } /* Sc (Scandium) */
+.element[data-index="21"] { grid-column: 4; grid-row: 4; } /* Ti (Titanium) */
+.element[data-index="22"] { grid-column: 5; grid-row: 4; } /* V (Vanadium) */
+.element[data-index="23"] { grid-column: 6; grid-row: 4; } /* Cr (Chromium) */
+.element[data-index="24"] { grid-column: 7; grid-row: 4; } /* Mn (Manganese) */
+.element[data-index="25"] { grid-column: 8; grid-row: 4; } /* Fe (Iron) */
+.element[data-index="26"] { grid-column: 9; grid-row: 4; } /* Co (Cobalt) */
+.element[data-index="27"] { grid-column: 10; grid-row: 4; } /* Ni (Nickel) */
+.element[data-index="28"] { grid-column: 11; grid-row: 4; } /* Cu (Copper) */
+.element[data-index="29"] { grid-column: 12; grid-row: 4; } /* Zn (Zinc) */
+.element[data-index="30"] { grid-column: 13; grid-row: 4; } /* Ga (Gallium) */
+.element[data-index="31"] { grid-column: 14; grid-row: 4; } /* Ge (Germanium) */
+.element[data-index="32"] { grid-column: 15; grid-row: 4; } /* As (Arsenic) */
+.element[data-index="33"] { grid-column: 16; grid-row: 4; } /* Se (Selenium) */
+.element[data-index="34"] { grid-column: 17; grid-row: 4; } /* Br (Bromine) */
+.element[data-index="35"] { grid-column: 18; grid-row: 4; } /* Kr (Krypton) */
+.element[data-index="36"] { grid-column: 1; grid-row: 5; } /* Rb (Rubidium) */
+.element[data-index="37"] { grid-column: 2; grid-row: 5; } /* Sr (Strontium) */
+.element[data-index="38"] { grid-column: 3; grid-row: 5; } /* Y (Yttrium) */
+.element[data-index="39"] { grid-column: 4; grid-row: 5; } /* Zr (Zirconium) */
+.element[data-index="40"] { grid-column: 5; grid-row: 5; } /* Nb (Niobium) */
+.element[data-index="41"] { grid-column: 6; grid-row: 5; } /* Mo (Molybdenum) */
+.element[data-index="42"] { grid-column: 7; grid-row: 5; } /* Tc (Technetium) */
+.element[data-index="43"] { grid-column: 8; grid-row: 5; } /* Ru (Ruthenium) */
+.element[data-index="44"] { grid-column: 9; grid-row: 5; } /* Rh (Rhodium) */
+.element[data-index="45"] { grid-column: 10; grid-row: 5; } /* Pd (Palladium) */
+.element[data-index="46"] { grid-column: 11; grid-row: 5; } /* Ag (Silver) */
+.element[data-index="47"] { grid-column: 12; grid-row: 5; } /* Cd (Cadmium) */
+.element[data-index="48"] { grid-column: 13; grid-row: 5; } /* In (Indium) */
+.element[data-index="49"] { grid-column: 14; grid-row: 5; } /* Sn (Tin) */
+.element[data-index="50"] { grid-column: 15; grid-row: 5; } /* Sb (Antimony) */
+.element[data-index="51"] { grid-column: 16; grid-row: 5; } /* Te (Tellurium) */
+.element[data-index="52"] { grid-column: 17; grid-row: 5; } /* I (Iodine) */
+.element[data-index="53"] { grid-column: 18; grid-row: 5; } /* Xe (Xenon) */
+.element[data-index="54"] { grid-column: 1; grid-row: 6; } /* Cs (Cesium) */
+.element[data-index="55"] { grid-column: 2; grid-row: 6; } /* Ba (Barium) */
+.element[data-index="56"] { grid-column: 3; grid-row: 9; } /* La (Lanthanum) */
+.element[data-index="57"] { grid-column: 4; grid-row: 6; } /* Hf (Hafnium) */
+.element[data-index="58"] { grid-column: 5; grid-row: 6; } /* Ta (Tantalum) */
+.element[data-index="59"] { grid-column: 6; grid-row: 6; } /* W (Tungsten) */
+.element[data-index="60"] { grid-column: 7; grid-row: 6; } /* Re (Rhenium) */
+.element[data-index="61"] { grid-column: 8; grid-row: 6; } /* Os (Osmium) */
+.element[data-index="62"] { grid-column: 9; grid-row: 6; } /* Ir (Iridium) */
+.element[data-index="63"] { grid-column: 10; grid-row: 6; } /* Pt (Platinum) */
+.element[data-index="64"] { grid-column: 11; grid-row: 6; } /* Au (Gold) */
+.element[data-index="65"] { grid-column: 12; grid-row: 6; } /* Hg (Mercury) */
+.element[data-index="66"] { grid-column: 13; grid-row: 6; } /* Tl (Thallium) */
+.element[data-index="67"] { grid-column: 14; grid-row: 6; } /* Pb (Lead) */
+.element[data-index="68"] { grid-column: 15; grid-row: 6; } /* Bi (Bismuth) */
+.element[data-index="69"] { grid-column: 16; grid-row: 6; } /* Po (Polonium) */
+.element[data-index="70"] { grid-column: 17; grid-row: 6; } /* At (Astatine) */
+.element[data-index="71"] { grid-column: 18; grid-row: 6; } /* Rn (Radon) */
+.element[data-index="72"] { grid-column: 1; grid-row: 7; } /* Fr (Francium) */
+.element[data-index="73"] { grid-column: 2; grid-row: 7; } /* Ra (Radium) */
+.element[data-index="74"] { grid-column: 4; grid-row: 10; } /* Ac (Actinium) */
+.element[data-index="75"] { grid-column: 5; grid-row: 9; } /* Ce (Cerium) */
+.element[data-index="76"] { grid-column: 6; grid-row: 9; } /* Pr (Praseodymium) */
+.element[data-index="77"] { grid-column: 7; grid-row: 9; } /* Nd (Neodymium) */
+.element[data-index="78"] { grid-column: 8; grid-row: 9; } /* Pm (Promethium) */
+.element[data-index="79"] { grid-column: 9; grid-row: 9; } /* Sm (Samarium) */
+.element[data-index="80"] { grid-column: 10; grid-row: 9; } /* Eu (Europium) */
+.element[data-index="81"] { grid-column: 11; grid-row: 9; } /* Gd (Gadolinium) */
+.element[data-index="82"] { grid-column: 12; grid-row: 9; } /* Tb (Terbium) */
+.element[data-index="83"] { grid-column: 13; grid-row: 9; } /* Dy (Dysprosium) */
+.element[data-index="84"] { grid-column: 14; grid-row: 9; } /* Ho (Holmium) */
+.element[data-index="85"] { grid-column: 15; grid-row: 9; } /* Er (Erbium) */
+.element[data-index="86"] { grid-column: 16; grid-row: 9; } /* Tm (Thulium) */
+.element[data-index="87"] { grid-column: 17; grid-row: 9; } /* Yb (Ytterbium) */
+.element[data-index="88"] { grid-column: 18; grid-row: 9; } /* Lu (Lutetium) */
+.element[data-index="89"] { grid-column: 5; grid-row: 10; } /* Th (Thorium) */
+.element[data-index="90"] { grid-column: 6; grid-row: 10; } /* Pa (Protactinium) */
+.element[data-index="91"] { grid-column: 7; grid-row: 10; } /* U (Uranium) */
+.element[data-index="92"] { grid-column: 8; grid-row: 10; } /* Np (Neptunium) */
+.element[data-index="93"] { grid-column: 9; grid-row: 10; } /* Pu (Plutonium) */
+.element[data-index="94"] { grid-column: 10; grid-row: 10; } /* Am (Americium) */
+.element[data-index="95"] { grid-column: 11; grid-row: 10; } /* Cm (Curium) */
+.element[data-index="96"] { grid-column: 12; grid-row: 10; } /* Bk (Berkelium) */
+.element[data-index="97"] { grid-column: 13; grid-row: 10; } /* Cf (Californium) */
+.element[data-index="98"] { grid-column: 14; grid-row: 10; } /* Es (Einsteinium) */
+.element[data-index="99"] { grid-column: 15; grid-row: 10; } /* Fm (Fermium) */
+.element[data-index="100"] { grid-column: 16; grid-row: 10; } /* Md (Mendelevium) */
+.element[data-index="101"] { grid-column: 17; grid-row: 10; } /* No (Nobelium) */
+.element[data-index="102"] { grid-column: 18; grid-row: 10; } /* Lr (Lawrencium) */
+.element[data-index="103"] { grid-column: 3; grid-row: 7; } /* Rf (Rutherfordium) */
+.element[data-index="104"] { grid-column: 4; grid-row: 7; } /* Db (Dubnium) */
+.element[data-index="105"] { grid-column: 5; grid-row: 7; } /* Sg (Seaborgium) */
+.element[data-index="106"] { grid-column: 6; grid-row: 7; } /* Bh (Bohrium) */
+.element[data-index="107"] { grid-column: 7; grid-row: 7; } /* Hs (Hassium) */
+.element[data-index="108"] { grid-column: 8; grid-row: 7; } /* Mt (Meitnerium) */
+.element[data-index="109"] { grid-column: 9; grid-row: 7; } /* Ds (Darmstadtium) */
+.element[data-index="110"] { grid-column: 10; grid-row: 7; } /* Rg (Roentgenium) */
+.element[data-index="111"] { grid-column: 11; grid-row: 7; } /* Cn (Copernicium) */
+.element[data-index="112"] { grid-column: 12; grid-row: 7; } /* Nh (Nihonium) */
+.element[data-index="113"] { grid-column: 13; grid-row: 7; } /* Fl (Flerovium) */
+.element[data-index="114"] { grid-column: 14; grid-row: 7; } /* Mc (Moscovium) */
+.element[data-index="115"] { grid-column: 15; grid-row: 7; } /* Lv (Livermorium) */
+.element[data-index="116"] { grid-column: 16; grid-row: 7; } /* Ts (Tennessine) */
+.element[data-index="117"] { grid-column: 17; grid-row: 7; } /* Og (Oganesson) */
+
+/* Styles for individual periodic table elements */
+.element {
+    width: 30px; /* Fixed width */
+    height: 30px; /* Fixed height */
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+    border: 1px solid #00ccff; /* Cyan border */
+    display: flex; /* Center content */
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    font-size: 0.7rem; /* Small font size for element symbols */
+    box-shadow: 0 0 5px #00ccff; /* Cyan glow */
+    transition: all 0.3s ease; /* Smooth transitions for state changes */
+}
+
+/* Style for elements when a game is won */
+.element.correct {
+    background: #00ff00; /* Green background */
+    box-shadow: 0 0 10px #00ff00; /* Green glow */
+    border-color: #00ff00; /* Green border */
+}
+
+/* Style for elements when a game is lost */
+.element.incorrect {
+    background: #ff0000; /* Red background */
+    box-shadow: 0 0 10px #ff0000; /* Red glow */
+    border-color: #ff0000; /* Red border */
+}
+
+/* Responsive adjustments for periodic table elements */
+@media (max-width: 576px) {
+    .periodic-table {
+        grid-template-columns: repeat(18, 25px); /* Smaller columns on mobile */
+        grid-template-rows: repeat(3, 25px); /* Smaller rows on mobile */
+    }
+    .element {
+        width: 25px; /* Smaller width on mobile */
+        height: 25px; /* Smaller height on mobile */
+        font-size: 0.6rem; /* Smaller font size */
+    }
+}
+
+/* Keyframe animation for the swirling effect in the portal */
+@keyframes swirl {
+    0% { transform: rotate(0deg); } /* Start at 0 degrees */
+    100% { transform: rotate(360deg);
+    }
+}
+/* Keyframe animation for the swirling effect in the portal */
+@keyframes swirl {
+    0% { transform: rotate(0deg); } /* Start at 0 degrees */
+    100% { transform: rotate(360deg); } /* Full 360-degree rotation */
+}
+
+/* Keyframe animation for pulsing neon text */
+@keyframes pulse {
+    0% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; } /* Subtle cyan glow */
+    50% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff; } /* Bright magenta glow */
+    100% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; } /* Back to cyan */
+}
+
+/* Keyframe animation for fading in elements */
+@keyframes fadeIn {
+    from { opacity: 0; } /* Start invisible */
+    to { opacity: 1; } /* Fully visible */
+}
+
+/* Keyframe animation for sliding in elements */
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; } /* Start below and invisible */
+    to { transform: translateY(0); opacity: 1; } /* Move to position and become visible */
+}
+
+/* Keyframe animation for bouncing buttons */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); } /* Rest positions */
+    50% { transform: translateY(-5px); } /* Bounce up */
+}
+
+/* Keyframe animation for the portal entry effect on page load */
+@keyframes portalEntry {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; } /* Start small and hidden */
+    50% { transform: scale(3) rotate(720deg); opacity: 1; } /* Expand and spin */
+    100% { transform: scale(20) rotate(1440deg); opacity: 0; } /* Overshoot and fade out */
+}
+
+/* Keyframe animation for portal transition during navigation */
+@keyframes portalTransition {
+    0% { opacity: 1; transform: scale(1); } /* Normal state */
+    50% { opacity: 0; transform: scale(1.5); } /* Scale up and fade */
+    100% { opacity: 0; transform: scale(0); } /* Shrink and disappear */
+}
+
+/* Animation classes to apply the above keyframes */
+.animate-pulse { animation: pulse 2s infinite; } /* Continuous pulsing */
+.animate-fade-in { animation: fadeIn 1s ease-in; } /* Fade in once */
+.animate-slide-in { animation: slideIn 0.8s ease-out; } /* Slide in once */
+.animate-bounce { animation: bounce 1.5s infinite; } /* Continuous bouncing */
+.animate-portal-entry { animation: portalEntry 2s ease forwards; } /* Portal entry once */
+.animate-portal { animation: portalTransition 1s ease forwards; } /* Portal transition once */

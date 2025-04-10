@@ -1,0 +1,262 @@
+/* Base styles for the body to set up the neon-themed background and font */
+body {
+    background: linear-gradient(135deg, #0d0015, #1a0033); /* Dark purple gradient background */
+    font-family: 'Orbitron', sans-serif; /* Futuristic font for neon aesthetic */
+    color: #fff; /* White text color */
+    min-height: 100vh; /* Ensure body takes full viewport height */
+    margin: 0; /* Remove default margins */
+    padding: 0; /* Remove default padding */
+    overflow: hidden; /* Prevent scrolling during loading animation */
+}
+
+/* Neon text effect for titles and important text */
+.neon-text {
+    text-shadow: 
+        0 0 5px #00ccff, 
+        0 0 10px #00ccff, 
+        0 0 20px #00ccff, 
+        0 0 40px #00ccff; /* Multiple layers of cyan glow */
+    color: #00ccff; /* Cyan text color */
+    font-weight: 700; /* Bold text */
+    font-size: 2rem; /* Default font size */
+}
+
+/* Responsive adjustments for neon text on smaller screens */
+@media (max-width: 576px) {
+    .neon-text { font-size: 1.5rem; } /* Smaller font on mobile */
+}
+@media (min-width: 768px) {
+    .neon-text { font-size: 2.5rem; } /* Larger font on larger screens */
+}
+
+/* Neon subtext effect for secondary text */
+.neon-subtext {
+    text-shadow: 
+        0 0 5px #ff00ff, 
+        0 0 10px #ff00ff; /* Magenta glow */
+    color: #ff00ff; /* Magenta text color */
+    font-size: 1rem; /* Default font size */
+}
+
+/* Responsive adjustments for neon subtext */
+@media (max-width: 576px) {
+    .neon-subtext { font-size: 0.9rem; } /* Slightly smaller on mobile */
+}
+
+/* Neon button styles for interactive elements */
+.neon-btn {
+    background: #00ccff; /* Cyan background */
+    border: none; /* No border */
+    color: #000; /* Black text for contrast */
+    padding: 10px 20px; /* Padding for button size */
+    text-transform: uppercase; /* Uppercase text for futuristic feel */
+    box-shadow: 
+        0 0 10px #00ccff, 
+        0 0 20px #00ccff; /* Cyan glow effect */
+    transition: all 0.4s ease; /* Smooth transitions for hover effects */
+    font-size: 0.9rem; /* Default font size */
+}
+
+/* Hover effect for neon buttons */
+.neon-btn:hover {
+    background: #ff00ff; /* Change to magenta on hover */
+    color: #fff; /* White text for contrast */
+    box-shadow: 
+        0 0 15px #ff00ff, 
+        0 0 30px #ff00ff; /* Magenta glow */
+    transform: translateY(-3px); /* Slight lift effect */
+}
+
+/* Disabled state for buttons */
+.neon-btn:disabled {
+    background: rgba(0, 0, 0, 0.9); /* Dark background */
+    box-shadow: 0 0 5px #ff0000; /* Red glow to indicate disabled */
+    cursor: not-allowed; /* Not-allowed cursor */
+}
+
+/* Responsive adjustments for buttons */
+@media (max-width: 576px) {
+    .neon-btn { 
+        padding: 8px 15px; /* Smaller padding on mobile */
+        font-size: 0.8rem; /* Smaller font size */
+    }
+}
+
+/* Sidebar styles for the navigation area */
+.sidebar {
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+    border-left: 2px solid #00ccff; /* Cyan border on the left */
+    height: 100vh; /* Full viewport height */
+    position: fixed; /* Fixed position on the right */
+    right: 0; /* Align to the right edge */
+    top: 0; /* Align to the top */
+    box-shadow: -5px 0 15px #00ccff; /* Cyan shadow on the left */
+}
+
+/* Responsive adjustments for the sidebar on smaller screens */
+@media (max-width: 991px) {
+    .sidebar {
+        position: static; /* Remove fixed positioning */
+        height: auto; /* Auto height to fit content */
+        border-left: none; /* Remove left border */
+        border-top: 2px solid #00ccff; /* Add top border instead */
+        box-shadow: 0 -5px 15px #00ccff; /* Shadow above the sidebar */
+    }
+}
+
+/* Portal overlay for loading and transition animations */
+.portal-overlay {
+    position: fixed; /* Cover the entire screen */
+    top: 0; /* Align to top */
+    left: 0; /* Align to left */
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    background: rgba(0, 0, 0, 0.9); /* Dark semi-transparent background */
+    display: flex; /* Center content */
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+/* Portal circle for the loading animation */
+.portal-circle {
+    width: 15vw; /* Proportional width */
+    height: 15vw; /* Proportional height */
+    max-width: 200px; /* Maximum size */
+    max-height: 200px; /* Maximum size */
+    min-width: 150px; /* Minimum size */
+    min-height: 150px; /* Minimum size */
+    background: radial-gradient(circle, #00ff00, #00cc00, #009900); /* Green gradient for portal effect */
+    border-radius: 50%; /* Circular shape */
+    box-shadow: 
+        0 0 20px #00ff00, 
+        0 0 40px #00ff00, 
+        0 0 60px #00ff00, 
+        0 0 100px #00ff00; /* Green glow effect */
+    position: relative; /* For pseudo-element positioning */
+    overflow: hidden; /* Hide overflow from pseudo-element */
+}
+
+/* Swirling effect inside the portal circle */
+.portal-circle::before {
+    content: ''; /* Empty pseudo-element */
+    position: absolute; /* Position within the circle */
+    top: -50%; /* Offset above the circle */
+    left: -50%; /* Offset to the left */
+    width: 200%; /* Double the size of the circle */
+    height: 200%; /* Double the size of the circle */
+    background: conic-gradient(#00ff00, #00cc00, #009900, #00cc00, #00ff00); /* Conic gradient for swirl */
+    animation: swirl 2s linear infinite; /* Continuous swirling animation */
+}
+
+/* Selection box for mode selection overlay */
+.selection-box {
+    background: rgba(0, 0, 0, 0.9); /* Dark semi-transparent background */
+    border: 2px solid #ff00ff; /* Magenta border */
+    padding: 20px; /* Internal padding */
+    box-shadow: 0 0 20px #ff00ff; /* Magenta glow */
+    border-radius: 10px; /* Rounded corners */
+    text-align: center; /* Center text */
+    transition: all 0.3s ease; /* Smooth transitions for hover effects */
+}
+
+/* Hover effect for the selection box */
+.selection-box:hover {
+    box-shadow: 0 0 30px #00ccff; /* Cyan glow on hover */
+    transform: scale(1.05); /* Slight scale-up effect */
+}
+
+/* Labels inside the selection box */
+.selection-box label {
+    margin: 0 5px; /* Spacing between labels */
+    font-size: 0.9rem; /* Font size for labels */
+}
+
+/* Inputs (radio/checkbox) inside the selection box */
+.selection-box input[type="radio"],
+.selection-box input[type="checkbox"] {
+    margin-right: 5px; /* Space between input and label text */
+}
+
+/* Portal box for navigation buttons */
+.portal-box {
+    background: rgba(0, 0, 0, 0.9); /* Dark semi-transparent background */
+    border: 2px solid #ff00ff; /* Magenta border */
+    padding: 15px; /* Internal padding */
+    box-shadow: 0 0 20px #ff00ff; /* Magenta glow */
+    border-radius: 10px; /* Rounded corners */
+    transition: all 0.3s ease; /* Smooth transitions for hover effects */
+}
+
+/* Hover effect for the portal box */
+.portal-box:hover {
+    box-shadow: 
+        0 0 30px #00ccff, 
+        0 0 50px #00ccff; /* Cyan glow on hover */
+    transform: scale(1.05); /* Slight scale-up effect */
+}
+
+/* Portal button styles (buttons inside the portal box) */
+.portal-btn {
+    background: #ff00ff; /* Magenta background */
+    box-shadow: 0 0 15px #ff00ff; /* Magenta glow */
+}
+
+/* Hover effect for portal buttons */
+.portal-btn:hover {
+    background: #00ccff; /* Cyan background on hover */
+    box-shadow: 0 0 20px #00ccff; /* Cyan glow */
+}
+
+/* Keyframe animation for the swirling effect in the portal */
+@keyframes swirl {
+    0% { transform: rotate(0deg); } /* Start at 0 degrees */
+    100% { transform: rotate(360deg); } /* Full 360-degree rotation */
+}
+
+/* Keyframe animation for pulsing neon text */
+@keyframes pulse {
+    0% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; } /* Subtle cyan glow */
+    50% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff; } /* Bright magenta glow */
+    100% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; } /* Back to cyan */
+}
+
+/* Keyframe animation for fading in elements */
+@keyframes fadeIn {
+    from { opacity: 0; } /* Start invisible */
+    to { opacity: 1; } /* Fully visible */
+}
+
+/* Keyframe animation for sliding in elements */
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; } /* Start below and invisible */
+    to { transform: translateY(0); opacity: 1; } /* Move to position and become visible */
+}
+
+/* Keyframe animation for bouncing buttons */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); } /* Rest positions */
+    50% { transform: translateY(-5px); } /* Bounce up */
+}
+
+/* Keyframe animation for the portal entry effect on page load */
+@keyframes portalEntry {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; } /* Start small and hidden */
+    50% { transform: scale(3) rotate(720deg); opacity: 1; } /* Expand and spin */
+    100% { transform: scale(20) rotate(1440deg); opacity: 0; } /* Overshoot and fade out */
+}
+
+/* Keyframe animation for portal transition during navigation */
+@keyframes portalTransition {
+    0% { opacity: 1; transform: scale(1); } /* Normal state */
+    50% { opacity: 0; transform: scale(1.5); } /* Scale up and fade */
+    100% { opacity: 0; transform: scale(0); } /* Shrink and disappear */
+}
+
+/* Animation classes to apply the above keyframes */
+.animate-pulse { animation: pulse 2s infinite; } /* Continuous pulsing */
+.animate-fade-in { animation: fadeIn 1s ease-in; } /* Fade in once */
+.animate-slide-in { animation: slideIn 0.8s ease-out; } /* Slide in once */
+.animate-bounce { animation: bounce 1.5s infinite; } /* Continuous bouncing */
+.animate-portal-entry { animation: portalEntry 2s ease forwards; } /* Portal entry once */
+.animate-portal { animation: portalTransition 1s ease forwards; } /* Portal transition once */
