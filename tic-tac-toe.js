@@ -1,377 +1,315 @@
 // Game state variables
 let board = Array(9).fill(null); // 3x3 board represented as a 1D array
-let currentPlayer = "X"; // Current player (X or O)
-let player1Score = 0; // Score for Player 1
-let player2Score = 0; // Score for Player 2 or AI
-let gameActive = false; // Flag to track if the game is active
-let isMultiplayer = false; // Flag to track if the game is in multiplayer mode
-let difficulty = "easy"; // AI difficulty (easy, medium, hard)
-let overrideMode = false; // Flag for Override Mode
-const userName = localStorage.getItem("userName") || "Cyber Warrior"; // Username from localStorage
-const winningCombinations = [
+let player1Score = 0; // Score for Player 1 (X)
+let player2Score = 0; // Score for Player 2 or AI (O)
+let currentPlayer = "X"; // Current player, X starts
+let gameActive = false; // Flag to indicate if the game is active
+let isMultiplayer = false; // Flag for multiplayer mode
+let difficulty = "easy"; // AI difficulty level (easy, medium, hard)
+const player1Name = localStorage.getItem("player1Name") || "Cyber Warrior"; // Player 1 name from localStorage or default
+let player2Name = localStorage.getItem("player2Name") || "Neon Striker"; // Player 2 name, default if not set
+const winningCombos = [ // Array of winning combinations (indices)
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
     [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
     [0, 4, 8], [2, 4, 6] // Diagonals
 ];
 
-// Initialize the page when the DOM is fully loaded
+// Initialize page when DOM is fully loaded
 function initPage() {
-    // Get the portal overlay, player selection, and main content elements
-    const portalOverlay = document.getElementById("portal-overlay");
-    const playerSelection = document.getElementById("player-selection");
-    const mainContent = document.getElementById("main-content");
-
-    // After 2 seconds, hide the portal overlay and show the player selection overlay
+    const portalOverlay = document.getElementById("portal-overlay"); // Portal overlay element
+    const playerSelection = document.getElementById("player-selection"); // Mode selection overlay
+    const mainContent = document.getElementById("main-content"); // Main game content
+    // Show player selection after portal animation
     setTimeout(() => {
-        if (portalOverlay && playerSelection && mainContent) {
-            portalOverlay.style.display = "none"; // Hide loading animation
-            playerSelection.style.display = "flex"; // Show mode selection
-            mainContent.style.display = "none"; // Keep main content hidden
-            document.body.style.overflow = "auto"; // Re-enable scrolling
-        }
+        portalOverlay.style.display = "none"; // Hide portal
+        playerSelection.style.display = "flex"; // Show mode selection
+        mainContent.style.display = "none"; // Hide game content
+        document.body.style.overflow = "auto"; // Enable scrolling
     }, 2000);
 
     // Add event listeners for mode selection buttons
-    const singlePlayerBtn = document.getElementById("singlePlayer");
-    const multiPlayerBtn = document.getElementById("multiPlayer");
-    if (singlePlayerBtn) {
-        singlePlayerBtn.addEventListener("click", () => startGame(false));
-    }
-    if (multiPlayerBtn) {
-        multiPlayerBtn.addEventListener("click", () => startGame(true));
-    }
+    document.getElementById("singlePlayer").addEventListener("click", () => startGame(false));
+    document.getElementById("multiPlayer").addEventListener("click", promptPlayer2Name);
+    document.getElementById("confirmPlayer2Name").addEventListener("click", confirmPlayer2Name);
 }
 
-// Start a new game based on the selected mode
+// Prompt for Player 2 name in multiplayer mode
+function promptPlayer2Name() {
+    const playerSelection = document.getElementById("player-selection"); // Mode selection overlay
+    const player2NameOverlay = document.getElementById("player2-name"); // Player 2 name overlay
+    playerSelection.style.display = "none"; // Hide mode selection
+    player2NameOverlay.style.display = "flex"; // Show name input overlay
+}
+
+// Confirm Player 2 name and start multiplayer game
+function confirmPlayer2Name() {
+    const player2NameInput = document.getElementById("player2NameInput"); // Player 2 name input field
+    const player2NameError = document.getElementById("player2NameError"); // Error message element
+    let name = player2NameInput.value.trim(); // Trimmed input value
+    const nameRegex = /^[a-zA-Z0-9\s]+$/; // Regex for alphanumeric and spaces
+
+    // Validate Player 2 name
+    if (name.length === 0 || name.length > 20 || !nameRegex.test(name)) {
+        name = "Neon Striker"; // Default name if invalid
+        player2NameInput.value = name; // Set input to default
+        player2NameError.textContent = "Invalid name! Only alphanumeric characters and spaces allowed.";
+        player2NameError.style.display = "block"; // Show error
+        setTimeout(() => player2NameError.style.display = "none", 3000); // Hide error after 3 seconds
+    } else {
+        player2NameError.style.display = "none"; // Hide error if valid
+    }
+
+    player2Name = name; // Set Player 2 name
+    localStorage.setItem("player2Name", player2Name); // Store in localStorage
+    document.getElementById("player2-name").style.display = "none"; // Hide name input overlay
+    startGame(true); // Start multiplayer game
+}
+
+// Start a new game (single or multiplayer)
 function startGame(multiplayer) {
-    // Set game mode (multiplayer or single-player)
-    isMultiplayer = multiplayer;
-    gameActive = true;
-    board = Array(9).fill(null);
-    currentPlayer = "X";
-
-    // If single-player, get the selected AI difficulty
-    if (!isMultiplayer) {
-        difficulty = document.querySelector('input[name="difficulty"]:checked')?.value || "easy";
-    }
-
-    // Hide the player selection overlay and show the main content
-    const playerSelection = document.getElementById("player-selection");
-    const mainContent = document.getElementById("main-content");
-    if (playerSelection && mainContent) {
-        playerSelection.style.display = "none";
-        mainContent.style.display = "block";
-    }
-
-    // Set up the override mode toggle
-    const overrideToggle = document.getElementById("overrideMode");
-    if (overrideToggle) {
-        overrideToggle.addEventListener("change", () => {
-            overrideMode = overrideToggle.checked;
-            if (overrideMode) playSound("overrideSound");
-        });
-    }
-
-    // Update the initial display (scores, turn)
-    updateDisplay();
-    // Create the game board
-    createBoard();
-    // Start color cycling for the result text
-    cycleColors("result");
+    isMultiplayer = multiplayer; // Set game mode
+    gameActive = true; // Activate game
+    board = Array(9).fill(null); // Reset board to empty
+    currentPlayer = "X"; // X always starts
+    if (!isMultiplayer) difficulty = document.querySelector('input[name="difficulty"]:checked')?.value || "easy"; // Set AI difficulty
+    document.getElementById("main-content").style.display = "block"; // Show game content
+    updateDisplay(); // Update UI with scores and turn
+    createBoard(); // Create the game board
+    cycleColors("result"); // Start result text color cycling
+    setupOverrideMode(); // Setup override mode functionality
 }
 
-// Update the display (scores, turn)
+// Update the game display (scores and turn)
 function updateDisplay() {
-    // Get the DOM elements for scores and turn
-    const player1ScoreElement = document.getElementById("player1Score");
-    const player2ScoreElement = document.getElementById("player2Score");
-    const turnElement = document.getElementById("turn");
+    document.getElementById("player1Score").textContent = `${player1Name} (X): ${player1Score}`; // Display Player 1 score
+    document.getElementById("player2Score").textContent = `${isMultiplayer ? player2Name : "AI"} (O): ${player2Score}`; // Display Player 2 or AI score
+    document.getElementById("turn").textContent = `Turn: ${currentPlayer === "X" ? player1Name + " (X)" : (isMultiplayer ? player2Name + " (O)" : "AI (O)")}`; // Display current turn
+}
 
-    // Update the elements with current game state
-    if (player1ScoreElement && player2ScoreElement && turnElement) {
-        player1ScoreElement.textContent = `${userName} (X): ${player1Score}`;
-        player2ScoreElement.textContent = `${isMultiplayer ? "Player 2" : "AI"} (O): ${player2Score}`;
-        turnElement.textContent = `Turn: ${currentPlayer === "X" ? userName + " (X)" : (isMultiplayer ? "Player 2 (O)" : "AI (O)")}`;
+// Create the game board with clickable cells
+function createBoard() {
+    const boardElement = document.getElementById("board"); // Board container element
+    boardElement.innerHTML = ""; // Clear any existing cells
+    for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div"); // Create new cell
+        cell.className = "cell"; // Apply cell styling
+        cell.setAttribute("data-index", i); // Set index attribute for click handling
+        cell.addEventListener("click", () => handleCellClick(i)); // Add click event listener
+        boardElement.appendChild(cell); // Add cell to board
     }
+    updateBoard(); // Update board visuals after creation
+}
 
-    // Enable or disable cells based on the current player and game state
-    const cells = document.querySelectorAll(".cell");
-    cells.forEach(cell => {
-        cell.classList.toggle("disabled", !gameActive || (currentPlayer === "O" && !isMultiplayer));
+// Setup override mode functionality
+function setupOverrideMode() {
+    const overrideCheckbox = document.getElementById("overrideMode"); // Override mode checkbox
+    overrideCheckbox.checked = false; // Ensure unchecked at start
+    overrideCheckbox.addEventListener("change", (e) => {
+        if (e.target.checked) {
+            playSound("overrideSound"); // Play override sound when enabled
+            if (!isMultiplayer && currentPlayer === "O") {
+                currentPlayer = "X"; // Switch back to player if AI's turn
+                updateDisplay(); // Update UI immediately
+            }
+        } else if (!isMultiplayer && currentPlayer === "O") {
+            setTimeout(aiMove, 500); // AI moves if override is disabled during its turn
+        }
     });
 }
 
-// Create the 3x3 game board
-function createBoard() {
-    const boardElement = document.getElementById("board");
-    if (boardElement) {
-        boardElement.innerHTML = ""; // Clear any existing cells
-        // Create 9 cells for the 3x3 grid
-        for (let i = 0; i < 9; i++) {
-            const cell = document.createElement("div");
-            cell.className = "cell";
-            cell.setAttribute("data-index", i);
-            cell.addEventListener("click", () => handleCellClick(i));
-            boardElement.appendChild(cell);
+// Handle cell click by player
+function handleCellClick(index) {
+    const overrideMode = document.getElementById("overrideMode").checked; // Check if override mode is active
+    // Prevent click if game is inactive, cell is taken (unless override), or AI's turn without override
+    if (!gameActive || (!overrideMode && board[index] !== null) || (!isMultiplayer && currentPlayer === "O" && !overrideMode)) return;
+    playSound("actionSound"); // Play action sound on click
+    board[index] = currentPlayer; // Set cell to current player's symbol
+    updateBoard(); // Update board visuals
+    const winner = checkWinner(); // Check for a winner
+    if (winner) {
+        endGame(winner); // End game if there's a winner
+    } else if (!board.includes(null)) {
+        endGame("tie"); // End game if board is full (tie)
+    } else {
+        currentPlayer = currentPlayer === "X" ? "O" : "X"; // Switch player
+        updateDisplay(); // Update UI with new turn
+        if (!isMultiplayer && currentPlayer === "O" && !overrideMode) {
+            setTimeout(aiMove, 500); // Trigger AI move if not overridden
         }
     }
 }
 
-// Handle a cell click
-function handleCellClick(index) {
-    // Ignore if the game is not active, cell is already taken, or it's the AI's turn
-    if (!gameActive || board[index] || (currentPlayer === "O" && !isMultiplayer)) return;
-
-    // Play action sound
-    playSound("actionSound");
-
-    // Handle the move
-    makeMove(index, currentPlayer);
-    // Check for a winner or tie
-    const winner = checkWinner();
-    if (winner) {
-        endGame(winner);
-        return;
-    }
-    if (board.every(cell => cell)) {
-        endGame("tie");
-        return;
-    }
-
-    // Switch players
-    currentPlayer = currentPlayer === "X" ? "O" : "X";
-    updateDisplay();
-
-    // If single-player mode and it's the AI's turn, trigger AI move
-    if (!isMultiplayer && currentPlayer === "O") {
-        setTimeout(aiMove, 500); // Delay AI move for better UX
-    }
+// Update the visual board based on game state
+function updateBoard() {
+    const cells = document.querySelectorAll(".cell"); // Get all cell elements
+    cells.forEach((cell, index) => {
+        cell.textContent = board[index] || ""; // Set cell content (X, O, or empty)
+        cell.classList.toggle("x", board[index] === "X"); // Apply X styling
+        cell.classList.toggle("o", board[index] === "O"); // Apply O styling
+        cell.classList.toggle("disabled", board[index] !== null); // Disable filled cells
+    });
 }
 
-// Make a move on the board
-function makeMove(index, player) {
-    // If override mode is on and the cell is already taken by the opponent, allow override
-    if (overrideMode && board[index] && board[index] !== player) {
-        playSound("overrideSound");
-    } else if (board[index]) {
-        return; // Cell is already taken and override mode is off
+// Check for a winner based on winning combinations
+function checkWinner() {
+    for (const combo of winningCombos) {
+        const [a, b, c] = combo; // Destructure winning combo indices
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a]; // Return winner (X or O)
     }
-
-    // Update the board and display
-    board[index] = player;
-    const cell = document.querySelector(`.cell[data-index="${index}"]`);
-    if (cell) {
-        cell.textContent = player;
-        cell.classList.add(player.toLowerCase());
-        cell.classList.add("disabled");
-    }
+    return null; // No winner found
 }
 
 // AI move logic based on difficulty
 function aiMove() {
-    // Ignore if the game is not active
-    if (!gameActive) return;
-
+    if (!gameActive || document.getElementById("overrideMode").checked) return; // Exit if game inactive or override is on
     let move;
-
-    // Easy difficulty: Random move
     if (difficulty === "easy") {
-        const available = board.map((val, idx) => val === null ? idx : null).filter(val => val !== null);
-        move = available[Math.floor(Math.random() * available.length)];
+        move = getRandomMove(); // Random move for easy mode
+    } else if (difficulty === "medium") {
+        move = getWinningMove("O") || getWinningMove("X") || getRandomMove(); // Win, block, or random for medium
+    } else { // Hard mode
+        move = minimax(board, "O").index; // Optimal move using minimax
     }
-    // Medium difficulty: Block or win if possible, otherwise random
-    else if (difficulty === "medium") {
-        // Check for winning move
-        move = findBestMove("O");
-        if (move === null) {
-            // Check for blocking move
-            move = findBestMove("X");
-        }
-        if (move === null) {
-            // Random move
-            const available = board.map((val, idx) => val === null ? idx : null).filter(val => val !== null);
-            move = available[Math.floor(Math.random() * available.length)];
-        }
-    }
-    // Hard difficulty: Use Minimax algorithm
-    else if (difficulty === "hard") {
-        move = minimax(board, "O").index;
-    }
-
-    // Make the AI's move
-    if (move !== undefined && move !== null) {
-        makeMove(move, "O");
-        // Check for a winner or tie
-        const winner = checkWinner();
+    if (move !== undefined) {
+        board[move] = "O"; // Place AI's O
+        updateBoard(); // Update board visuals
+        const winner = checkWinner(); // Check for winner
         if (winner) {
-            endGame(winner);
-            return;
-        }
-        if (board.every(cell => cell)) {
-            endGame("tie");
-            return;
-        }
-        // Switch back to player
-        currentPlayer = "X";
-        updateDisplay();
-    }
-}
-
-// Find a move that wins or blocks the opponent
-function findBestMove(player) {
-    for (let combo of winningCombinations) {
-        const [a, b, c] = combo;
-        // Check for two cells with the player's mark and one empty
-        if (board[a] === player && board[b] === player && !board[c]) return c;
-        if (board[a] === player && !board[b] && board[c] === player) return b;
-        if (!board[a] && board[b] === player && board[c] === player) return a;
-    }
-    return null;
-}
-
-// Minimax algorithm for hard difficulty
-function minimax(newBoard, player) {
-    // Get available spots
-    const available = newBoard.map((val, idx) => val === null ? idx : null).filter(val => val !== null);
-
-    // Base cases: check for terminal states
-    const winner = checkWinner();
-    if (winner === "O") return { score: 10 };
-    if (winner === "X") return { score: -10 };
-    if (available.length === 0) return { score: 0 };
-
-    // Initialize variables to track the best move
-    let bestMove;
-    if (player === "O") {
-        let bestScore = -Infinity;
-        for (let i of available) {
-            // Simulate the move
-            newBoard[i] = "O";
-            const result = minimax(newBoard, "X");
-            newBoard[i] = null; // Undo the move
-            if (result.score > bestScore) {
-                bestScore = result.score;
-                bestMove = { index: i, score: bestScore };
-            }
-        }
-    } else {
-        let bestScore = Infinity;
-        for (let i of available) {
-            // Simulate the move
-            newBoard[i] = "X";
-            const result = minimax(newBoard, "O");
-            newBoard[i] = null; // Undo the move
-            if (result.score < bestScore) {
-                bestScore = result.score;
-                bestMove = { index: i, score: bestScore };
-            }
-        }
-    }
-    return bestMove;
-}
-
-// Check for a winner
-function checkWinner() {
-    for (let combo of winningCombinations) {
-        const [a, b, c] = combo;
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            return board[a];
-        }
-    }
-    return null;
-}
-
-// End the game (win, lose, or tie)
-function endGame(result) {
-    gameActive = false;
-    const resultElement = document.getElementById("result");
-    let message = "";
-    if (result === "tie") {
-        message = "Grid Locked!";
-        playSound("loseSound");
-    } else {
-        if (result === "X") {
-            message = `${userName} Wins!`;
-            player1Score++;
-            playSound("winSound");
+            endGame(winner); // End game if AI wins
+        } else if (!board.includes(null)) {
+            endGame("tie"); // End game if tie
         } else {
-            message = `${isMultiplayer ? "Player 2" : "AI"} Wins!`;
-            player2Score++;
-            playSound("loseSound");
+            currentPlayer = "X"; // Switch back to player
+            updateDisplay(); // Update UI
         }
     }
-    if (resultElement) {
-        resultElement.textContent = message;
-    }
-    updateDisplay();
 }
 
-// Reset the game to the mode selection screen
-function resetGame() {
-    // Play click sound
-    playSound("clickSound");
-    // Get the necessary DOM elements
-    const portalOverlay = document.getElementById("portal-overlay");
-    const playerSelection = document.getElementById("player-selection");
-    const mainContent = document.getElementById("main-content");
-
-    // Show portal animation and transition to mode selection
-    if (portalOverlay && playerSelection && mainContent) {
-        mainContent.style.display = "none";
-        portalOverlay.style.display = "flex";
-        setTimeout(() => {
-            gameActive = false;
-            board = Array(9).fill(null);
-            currentPlayer = "X";
-            player1Score = 0;
-            player2Score = 0;
-            overrideMode = false;
-            const overrideToggle = document.getElementById("overrideMode");
-            if (overrideToggle) overrideToggle.checked = false;
-            playerSelection.style.display = "flex";
-            portalOverlay.style.display = "none";
-        }, 2000);
-    }
+// Get a random available move for AI
+function getRandomMove() {
+    const available = board.map((val, idx) => val === null ? idx : null).filter(val => val !== null); // Array of empty cell indices
+    return available[Math.floor(Math.random() * available.length)]; // Return random available index
 }
 
-// Play a sound effect by ID
-function playSound(soundId) {
-    const sound = document.getElementById(soundId);
-    if (sound) {
-        sound.currentTime = 0; // Reset sound to the beginning
-        sound.play().catch(error => console.log("Sound play error:", error)); // Play sound, log errors
+// Check for a winning or blocking move for given player
+function getWinningMove(player) {
+    for (const combo of winningCombos) {
+        const [a, b, c] = combo; // Destructure combo
+        if (board[a] === player && board[b] === player && !board[c]) return c; // Win/block at c
+        if (board[a] === player && !board[b] && board[c] === player) return b; // Win/block at b
+        if (!board[a] && board[b] === player && board[c] === player) return a; // Win/block at a
+    }
+    return null; // No winning/blocking move
+}
+
+// Minimax algorithm for hard AI to find optimal move
+function minimax(newBoard, player) {
+    const available = newBoard.map((val, idx) => val === null ? idx : null).filter(val => val !== null); // Available spots
+    const winner = checkWinner(); // Check current board state
+    if (winner === "O") return { score: 10 }; // AI wins
+    if (winner === "X") return { score: -10 }; // Player wins
+    if (available.length === 0) return { score: 0 }; // Tie
+
+    const moves = []; // Array to store possible moves
+    for (const index of available) {
+        const move = {}; // Move object
+        move.index = index; // Store move index
+        newBoard[index] = player; // Simulate move
+        if (player === "O") {
+            move.score = minimax(newBoard, "X").score; // Maximize AI score
+        } else {
+            move.score = minimax(newBoard, "O").score; // Minimize player score
+        }
+        newBoard[index] = null; // Undo move
+        moves.push(move); // Add move to list
+    }
+
+    let bestMove; // Best move object
+    if (player === "O") { // AI's turn
+        let bestScore = -Infinity; // Start with worst score
+        for (const move of moves) {
+            if (move.score > bestScore) { // Find highest score
+                bestScore = move.score;
+                bestMove = move;
+            }
+        }
+    } else { // Player's turn
+        let bestScore = Infinity; // Start with worst score
+        for (const move of moves) {
+            if (move.score < bestScore) { // Find lowest score
+                bestScore = move.score;
+                bestMove = move;
+            }
+        }
+    }
+    return bestMove; // Return best move with score and index
+}
+
+// End the game with result (winner or tie)
+function endGame(result) {
+    gameActive = false; // Deactivate game
+    const resultElement = document.getElementById("result"); // Result display element
+    if (result === "X") {
+        player1Score++; // Increment Player 1 score
+        resultElement.textContent = `${player1Name} (X) Secures the Grid!`; // Win message
+        playSound("winSound"); // Play win sound
+    } else if (result === "O") {
+        player2Score++; // Increment Player 2/AI score
+        resultElement.textContent = `${isMultiplayer ? player2Name : "AI"} (O) Secures the Grid!`; // Win message
+        playSound("loseSound"); // Play lose sound
     } else {
-        console.log(`Sound element with ID ${soundId} not found.`); // Log if sound element is missing
+        resultElement.textContent = "Grid Locked - Tie!"; // Tie message
+        playSound("loseSound"); // Play tie sound
+    }
+    updateDisplay(); // Update scores in UI
+}
+
+// Reset game to mode selection screen
+function resetGame() {
+    playSound("clickSound"); // Play click sound
+    const portalOverlay = document.getElementById("portal-overlay"); // Portal overlay
+    const playerSelection = document.getElementById("player-selection"); // Mode selection overlay
+    const mainContent = document.getElementById("main-content"); // Main game content
+    mainContent.style.display = "none"; // Hide game content
+    portalOverlay.style.display = "flex"; // Show portal animation
+    setTimeout(() => {
+        gameActive = false; // Reset game state
+        playerSelection.style.display = "flex"; // Show mode selection
+        portalOverlay.style.display = "none"; // Hide portal
+        document.getElementById("result").textContent = ""; // Clear result message
+    }, 2000); // 2-second delay for portal effect
+}
+
+// Play audio sound with error handling
+function playSound(soundId) {
+    const sound = document.getElementById(soundId); // Get audio element by ID
+    if (sound) {
+        sound.currentTime = 0; // Reset sound to start
+        sound.play().catch(error => console.log("Sound play error:", error)); // Play sound, log errors
     }
 }
 
-// Cycle colors for the result text to create a neon effect
+// Cycle colors for result text for visual effect
 function cycleColors(elementId) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        const colors = ["#00ccff", "#ff00ff", "#00ff00", "#ffff00", "#ff6600"]; // Array of neon colors
-        let index = 0;
-        setInterval(() => {
-            element.style.color = colors[index]; // Change text color
-            element.style.textShadow = `0 0 5px ${colors[index]}, 0 0 10px ${colors[index]}, 0 0 20px ${colors[index]}`; // Change glow
-            index = (index + 1) % colors.length; // Cycle through colors
-        }, 700); // Change color every 700ms
-    }
+    const element = document.getElementById(elementId); // Target element for color cycling
+    const colors = ["#00ccff", "#ff00ff", "#00ff00", "#ffff00", "#ff6600"]; // Array of neon colors
+    let index = 0; // Current color index
+    setInterval(() => {
+        element.style.color = colors[index]; // Set text color
+        element.style.textShadow = `0 0 5px ${colors[index]}, 0 0 10px ${colors[index]}, 0 0 20px ${colors[index]}`; // Set glow effect
+        index = (index + 1) % colors.length; // Cycle to next color
+    }, 700); // Change color every 700ms
 }
 
-// Handle navigation to another page with a portal transition animation
+// Handle portal transition to another page
 function portalTransition(url) {
-    const portalOverlay = document.getElementById("portal-overlay");
-    const mainContent = document.getElementById("main-content");
-    if (portalOverlay && mainContent) {
-        playSound("clickSound"); // Play click sound
-        mainContent.style.display = "none"; // Hide main content
-        portalOverlay.style.display = "flex"; // Show portal animation
-        setTimeout(() => {
-            window.location.href = url; // Navigate to the new page after 2 seconds
-        }, 2000);
-    }
+    const portalOverlay = document.getElementById("portal-overlay"); // Portal overlay
+    const mainContent = document.getElementById("main-content"); // Main game content
+    playSound("clickSound"); // Play click sound
+    mainContent.style.display = "none"; // Hide current content
+    portalOverlay.style.display = "flex"; // Show portal animation
+    setTimeout(() => window.location.href = url, 2000); // Redirect to new URL after 2 seconds
 }
 
-// Add event listener to initialize the page when the DOM is loaded
+// Add event listener for DOM content loaded to initialize page
 document.addEventListener("DOMContentLoaded", initPage);

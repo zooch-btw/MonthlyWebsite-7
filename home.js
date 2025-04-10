@@ -1,81 +1,59 @@
-// Initialize the page when the DOM is fully loaded
+// Initialize page when DOM is fully loaded
 function initPage() {
-    // Get the portal overlay and main content elements
-    const portalOverlay = document.getElementById("portal-overlay");
-    const mainContent = document.getElementById("main-content");
-
-    // After 2 seconds, hide the portal overlay and show the main content
+    const portalOverlay = document.getElementById("portal-overlay"); // Portal overlay element
+    const mainContent = document.getElementById("main-content"); // Main content element
+    // Show main content after portal animation
     setTimeout(() => {
-        if (portalOverlay && mainContent) {
-            portalOverlay.style.display = "none"; // Hide the loading animation
-            mainContent.style.display = "block"; // Show the main content
-            document.body.style.overflow = "auto"; // Re-enable scrolling
-        }
+        portalOverlay.style.display = "none";
+        mainContent.style.display = "block";
+        document.body.style.overflow = "auto"; // Enable scrolling
     }, 2000);
 
-    // Add event listener to the "Enter the Realm" button
-    const enterBtn = document.getElementById("enterBtn");
-    if (enterBtn) {
-        enterBtn.addEventListener("click", enterRealm);
-    }
+    const enterBtn = document.getElementById("enterBtn"); // Enter button
+    enterBtn.addEventListener("click", enterRealm); // Add click event
 }
 
-// Handle the "Enter the Realm" button click
+// Handle entering the realm
 function enterRealm() {
-    // Get the username input element and its value
-    const userNameInput = document.getElementById("userName");
-    const userNameError = document.getElementById("usernameError");
-    let userName = userNameInput.value.trim();
+    const userNameInput = document.getElementById("userName"); // Username input
+    const userNameError = document.getElementById("usernameError"); // Error message
+    let userName = userNameInput.value.trim(); // Trimmed username
+    const userNameRegex = /^[a-zA-Z0-9\s]+$/; // Alphanumeric and spaces only
 
-    // Validate the username: alphanumeric and spaces only, max length 20
-    const userNameRegex = /^[a-zA-Z0-9\s]+$/;
+    // Validate username
     if (userName.length === 0 || userName.length > 20 || !userNameRegex.test(userName)) {
-        // If invalid, use default username and show error message
-        userName = "Cyber Warrior";
-        userNameInput.value = userName; // Reset input to default
-        if (userNameError) {
-            userNameError.textContent = "Invalid username! Only alphanumeric characters and spaces allowed.";
-            userNameError.style.display = "block";
-        }
-        setTimeout(() => {
-            if (userNameError) userNameError.style.display = "none"; // Hide error after 3 seconds
-        }, 3000);
+        userName = "Cyber Warrior"; // Default name
+        userNameInput.value = userName; // Set default
+        userNameError.textContent = "Invalid username! Only alphanumeric characters and spaces allowed.";
+        userNameError.style.display = "block"; // Show error
+        setTimeout(() => userNameError.style.display = "none", 3000); // Hide after 3s
     } else {
-        // If valid, clear any error message
-        if (userNameError) userNameError.style.display = "none";
+        userNameError.style.display = "none"; // Hide error
     }
 
-    // Save the username to localStorage for use across pages
-    localStorage.setItem("userName", userName);
-    playSound("clickSound"); // Play click sound effect
-    portalTransition("rps.html"); // Navigate to RPS with portal animation
+    localStorage.setItem("userName", userName); // Store username
+    playSound("clickSound"); // Play sound
+    portalTransition("rps.html"); // Transition to RPS
 }
 
-// Play a sound effect by ID
+// Play audio sound
 function playSound(soundId) {
-    const sound = document.getElementById(soundId);
+    const sound = document.getElementById(soundId); // Audio element
     if (sound) {
-        sound.currentTime = 0; // Reset sound to the beginning
-        sound.play().catch(error => console.log("Sound play error:", error)); // Play sound, log errors
-    } else {
-        console.log(`Sound element with ID ${soundId} not found.`); // Log if sound element is missing
+        sound.currentTime = 0; // Reset to start
+        sound.play().catch(error => console.log("Sound play error:", error)); // Play with error handling
     }
 }
 
-// Handle navigation to another page with a portal transition animation
+// Handle portal transition to another page
 function portalTransition(url) {
-    // Get the portal overlay and main content elements
-    const portalOverlay = document.getElementById("portal-overlay");
-    const mainContent = document.getElementById("main-content");
-    if (portalOverlay && mainContent) {
-        playSound("clickSound"); // Play click sound
-        mainContent.style.display = "none"; // Hide the main content
-        portalOverlay.style.display = "flex"; // Show the portal animation
-        setTimeout(() => {
-            window.location.href = url; // Navigate to the new page after 2 seconds
-        }, 2000);
-    }
+    const portalOverlay = document.getElementById("portal-overlay"); // Portal overlay
+    const mainContent = document.getElementById("main-content"); // Main content
+    playSound("clickSound"); // Play sound
+    mainContent.style.display = "none"; // Hide content
+    portalOverlay.style.display = "flex"; // Show portal
+    setTimeout(() => window.location.href = url, 2000); // Redirect after 2s
 }
 
-// Add event listener to initialize the page when the DOM is loaded
+// Event listener for DOM content loaded
 document.addEventListener("DOMContentLoaded", initPage);

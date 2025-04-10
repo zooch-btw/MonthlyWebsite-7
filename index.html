@@ -1,82 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <!-- Page title and metadata -->
+    <!-- Page title -->
     <title>Neon Gaming Realm</title>
-    <!-- Favicon for the browser tab -->
+    <!-- Favicon for browser tab -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <!-- Character encoding -->
     <meta charset="utf-8" />
     <!-- Responsive viewport settings -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!-- Bootstrap CSS for layout and responsive design -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-    <!-- Orbitron font for futuristic neon aesthetic -->
+    <!-- Bootstrap CSS for layout and responsiveness -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <!-- Orbitron font for neon aesthetic -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS for neon styling and animations -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="home.css">
 </head>
-
 <body>
-    <!-- Portal overlay for loading animation, shown on page load -->
+    <!-- Portal overlay for loading animation -->
     <div id="portal-overlay" class="portal-overlay">
-        <!-- Animated portal circle for visual effect -->
         <div class="portal-circle animate-portal-entry"></div>
     </div>
-    <!-- Main content area, initially hidden until portal animation completes -->
+    <!-- Main content container, hidden initially -->
     <div id="main-content" class="container-fluid p-0" style="display: none;">
-        <!-- Full-width row for layout -->
-        <div class="row m-4 p-4">
-            <!-- Welcome section occupying 9/12 columns on large screens -->
-            <div class="col-lg-9 p-3 p-md-4">
-                <!-- Main title with neon effect and pulsing animation -->
-                <h1 class="neon-text text-center mb-4 mb-md-5 animate-pulse">Neon Gaming Realm</h1>
-                <!-- Centered content for username input -->
-                <div class="row justify-content-center">
-                    <!-- Input area, responsive across screen sizes -->
-                    <div class="col-10 col-md-6 col-lg-5 text-center animate-fade-in">
-                        <!-- Prompt for username input -->
+        <div class="row g-0 min-vh-100">
+            <!-- Welcome section, centered -->
+            <div class="col-lg-9 d-flex align-items-center justify-content-center p-3">
+                <div class="text-center">
+                    <!-- Main title with neon effect -->
+                    <h1 class="neon-text mb-4 animate-pulse">Neon Gaming Realm</h1>
+                    <div class="animate-fade-in">
+                        <!-- Prompt for username -->
                         <p class="neon-subtext mb-3">Enter Your Cyber Alias</p>
-                        <!-- Text input for username, with max length of 20 characters -->
-                        <input type="text" id="userName" class="form-control text-center mb-3"
-                            placeholder="Cyber Warrior" maxlength="20">
-                        <!-- Error message area for username validation, initially hidden -->
+                        <!-- Input field for username -->
+                        <input type="text" id="userName" class="form-control text-center mb-3" placeholder="Cyber Warrior" maxlength="20">
+                        <!-- Error message for invalid username -->
                         <div id="usernameError" class="neon-subtext mb-3" style="color: #ff0000; display: none;"></div>
-                        <!-- Button to enter the realm, navigates to RPS by default -->
+                        <!-- Enter button -->
                         <button id="enterBtn" class="btn neon-btn animate-bounce">Enter the Realm</button>
                     </div>
                 </div>
             </div>
-            <!-- Sidebar for navigation, occupying 3/12 columns on large screens -->
-            <div class="col-lg-3 sidebar p-3 p-md-4">
-                <!-- Sidebar title with neon effect -->
+            <!-- Sidebar navigation, centered -->
+            <div class="col-lg-3 sidebar p-3">
+                <!-- Sidebar title -->
                 <h2 class="neon-text mb-4 animate-pulse">Neon Nexus</h2>
-                <!-- Navigation portal box -->
+                <!-- Portal box for game navigation -->
                 <div id="neon-portal" class="portal-box">
-                    <!-- Portal box title -->
-                    <p class="neon-subtext text-center mb-2">Neon Portal</p>
-                    <!-- Grid of navigation buttons -->
+                    <p class="neon-subtext mb-2">Neon Portal</p>
+                    <!-- Game navigation buttons -->
                     <div class="d-grid gap-2">
-                        <!-- Button to navigate to RPS with portal animation -->
-                        <button onclick="portalTransition('rps.html')"
-                            class="btn neon-btn portal-btn animate-bounce">Enter Pixel Duel</button>
-                        <!-- Button to navigate to Hangman -->
-                        <button onclick="portalTransition('hangman.html')"
-                            class="btn neon-btn portal-btn animate-bounce">Enter Hangman</button>
-                        <!-- Button to navigate to Tic-Tac-Toe -->
-                        <button onclick="portalTransition('tic-tac-toe.html')"
-                            class="btn neon-btn portal-btn animate-bounce">Enter Neon Grid</button>
+                        <button onclick="portalTransition('rps.html')" class="btn neon-btn portal-btn animate-bounce">Rock Paper Scissors</button>
+                        <button onclick="portalTransition('hangman.html')" class="btn neon-btn portal-btn animate-bounce">Hangman</button>
+                        <button onclick="portalTransition('tic-tac-toe.html')" class="btn neon-btn portal-btn animate-bounce">Tic-Tac-Toe</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Audio element for button click sound effect -->
+    <!-- Audio for click sound -->
     <audio id="clickSound" src="click.wav" preload="auto"></audio>
-    <!-- Custom JavaScript for page functionality -->
+    <!-- JavaScript for interactivity -->
     <script src="home.js"></script>
 </body>
-
 </html>
