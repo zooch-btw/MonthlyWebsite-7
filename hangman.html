@@ -1,59 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Declares HTML5 document type and sets language to English for accessibility -->
 
 <head>
-    <title>Hangman - Periodic Table</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- 
+      - Sets page title for browser tab
+      - Defines UTF-8 encoding for character support
+      - Configures responsive viewport
+      - Imports Orbitron font for sci-fi aesthetic
+      - Links custom CSS for styling
+    -->
+    <title>Hangman - Periodic Elements</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="hangman.css">
 </head>
 
 <body>
+    <!-- 
+      - Portal overlay for transition effect
+      - Displays a spinning circle during load/reset
+    -->
     <div id="portal-overlay" class="portal-overlay">
         <div class="portal-circle animate-portal-entry"></div>
     </div>
 
-    <div id="main-content" class="container-fluid p-0" style="display: none;">
-        <div class="row g-0 min-vh-100">
-            <div class="col-lg-9 d-flex align-items-center justify-content-center p-3">
-                <div class="text-center">
-                    <h1 class="neon-text mb-4 animate-pulse">Hangman - Periodic Elements</h1>
-                    <p id="score" class="neon-subtext mb-3">Score: 0</p>
-                    <div id="hangman" class="hangman mb-4 mx-auto"></div>
-                    <p id="word" class="neon-text mb-3"></p>
-                    <div id="keyboard" class="keyboard mb-4 mx-auto"></div>
-                    <p id="result" class="neon-text animate-slide-in"></p>
+    <!-- 
+      - Main game container, initially hidden
+      - Uses flexbox for centered layout
+    -->
+    <div id="main-content" class="container" style="display: none;">
+        <div class="game-wrapper">
+            <!-- 
+              - Game area for Hangman interface
+              - Centered content with title, score, hangman stage, word, keyboard, and result
+            -->
+            <div class="game-area text-center">
+                <h1 class="neon-text mb-4 animate-pulse">Hangman - Periodic Elements</h1>
+                <p id="score" class="neon-subtext mb-3">Score: 0</p>
+                <div id="hangman-stage" class="hangman-stage mb-4 mx-auto">
+                    <pre id="hangman" class="hangman"></pre>
                 </div>
+                <p id="word" class="neon-text mb-3"></p>
+                <div id="keyboard" class="keyboard mb-4 mx-auto"></div>
+                <p id="result" class="neon-text animate-slide-in"></p>
             </div>
-            <div class="col-lg-3 sidebar p-3">
-                <h2 class="neon-text mb-4 animate-pulse">Neon Nexus</h2>
-                <div id="neon-portal" class="portal-box">
-                    <p class="neon-subtext mb-2">Neon Portal</p>
-                    <div class="d-grid gap-2">
-                        <button onclick="portalTransition('index.html')"
-                            class="btn neon-btn portal-btn animate-bounce">Home Grid</button>
-                        <button onclick="portalTransition('tic-tac-toe.html')"
-                            class="btn neon-btn portal-btn animate-bounce">Tic-Tac-Toe</button>
-                        <button onclick="portalTransition('rps.html')"
-                            class="btn neon-btn portal-btn animate-bounce">Rock Paper Scissors</button>
-                    </div>
-                </div>
-                <div class="d-grid mt-4">
-                    <button onclick="resetGame()" class="btn neon-btn animate-bounce">Reboot Grid</button>
-                </div>
+            <!-- 
+              - Sidebar for periodic table and reset button
+              - Contains scrollable periodic table in standard layout
+            -->
+            <div class="sidebar p-3">
+                <h2 class="neon-text mb-4 animate-pulse">Periodic Table</h2>
+                <div id="periodic-table" class="periodic-table scrollable"></div>
+                <button onclick="resetGame()" class="btn neon-btn animate-bounce mt-4">Reset Game</button>
             </div>
         </div>
     </div>
 
+    <!-- 
+      - Audio elements for sound effects
+      - Includes click, win, lose, and action sounds
+    -->
     <audio id="clickSound" src="sounds/click.wav" preload="auto"></audio>
     <audio id="winSound" src="sounds/win.wav" preload="auto"></audio>
     <audio id="loseSound" src="sounds/lose.wav" preload="auto"></audio>
     <audio id="actionSound" src="sounds/action.wav" preload="auto"></audio>
 
+    <!-- Links JavaScript for game logic -->
     <script src="hangman.js"></script>
 </body>
 
