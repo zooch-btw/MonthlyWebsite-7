@@ -86,7 +86,6 @@ function updateDisplay() {
     const wordDisplay = currentWord.split("").map(letter =>
         guessedLetters.includes(letter) ? letter : "_").join(" ");
     document.getElementById("word").textContent = wordDisplay;
-    document.getElementById("hangman").textContent = drawHangman(wrongGuesses);
     const resultElement = document.getElementById("result");
     if (wrongGuesses >= maxGuesses) {
         resultElement.textContent = `Game Over! Element: ${currentWord}`;
