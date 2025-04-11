@@ -2,30 +2,29 @@
 <html lang="en">
 
 <head>
-    <!-- Page title and metadata -->
+    <!-- Page title -->
     <title>Neon Gaming Realm</title>
-    <!-- Favicon for the browser tab -->
+    <!-- Favicon for browser tab -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <!-- Character encoding -->
     <meta charset="utf-8" />
     <!-- Responsive viewport settings -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!-- Bootstrap CSS for layout and responsive design -->
+    <!-- Bootstrap CSS for layout and responsiveness -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-    <!-- Orbitron font for futuristic neon aesthetic -->
+    <!-- Orbitron font for neon aesthetic -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS for neon styling and animations -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="home.css">
 </head>
 
 <body>
-    <!-- Portal overlay for loading animation, shown on page load -->
+    <!-- Portal overlay for loading animation -->
     <div id="portal-overlay" class="portal-overlay">
-        <!-- Animated portal circle for visual effect -->
         <div class="portal-circle animate-portal-entry"></div>
     </div>
-    <!-- Main content area, initially hidden until portal animation completes -->
+    <!-- Main content container, hidden initially -->
     <div id="main-content" class="container-fluid p-0" style="display: none;">
         <!-- Full-width row for layout -->
         <div class="row m-4 p-4">
@@ -41,12 +40,12 @@
                     <div class="col-10 col-md-6 col-lg-5 text-center animate-fade-in">
                         <!-- Prompt for username input -->
                         <p class="neon-subtext mb-3">Enter Your Cyber Alias</p>
-                        <!-- Text input for username, with max length of 20 characters -->
+                        <!-- Input field for username -->
                         <input type="text" id="userName" class="form-control text-center mb-3"
                             placeholder="Cyber Warrior" maxlength="20">
-                        <!-- Error message area for username validation, initially hidden -->
+                        <!-- Error message for invalid username -->
                         <div id="usernameError" class="neon-subtext mb-3" style="color: #ff0000; display: none;"></div>
-                        <!-- Button to enter the realm, navigates to RPS by default -->
+                        <!-- Enter button -->
                         <button id="enterBtn" class="btn neon-btn animate-bounce">Enter the Realm</button>
                     </div>
                 </div>
@@ -77,9 +76,9 @@
             </div>
         </div>
     </div>
-    <!-- Audio element for button click sound effect -->
+    <!-- Audio for click sound -->
     <audio id="clickSound" src="click.wav" preload="auto"></audio>
-    <!-- Custom JavaScript for page functionality -->
+    <!-- JavaScript for interactivity -->
     <script src="home.js"></script>
 </body>
 
