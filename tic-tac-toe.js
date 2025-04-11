@@ -76,7 +76,17 @@ function startGame(multiplayer) {
     updateDisplay(); // Update UI with scores and turn
     createBoard(); // Create the game board
     cycleColors("result"); // Start result text color cycling
-    setupOverrideMode(); // Setup override mode functionality
+}
+function startGame() {
+    gameActive = true; // Activate game
+    board = Array(9).fill(null); // Reset board to empty
+    currentPlayer = "X"; // X always starts
+    if (!isMultiplayer) difficulty = document.querySelector('input[name="difficulty"]:checked')?.value || "easy"; // Set AI difficulty
+    document.getElementById("main-content").style.display = "block"; // Show game content
+    updateDisplay(); // Update UI with scores and turn
+    createBoard(); // Create the game board
+    cycleColors("result"); // Start result text color cycling
+    playerSelection.style.display = "none"; // Hide mode selection
 }
 
 // Update the game display (scores and turn)
@@ -100,28 +110,10 @@ function createBoard() {
     updateBoard(); // Update board visuals after creation
 }
 
-// Setup override mode functionality
-function setupOverrideMode() {
-    const overrideCheckbox = document.getElementById("overrideMode"); // Override mode checkbox
-    overrideCheckbox.checked = false; // Ensure unchecked at start
-    overrideCheckbox.addEventListener("change", (e) => {
-        if (e.target.checked) {
-            playSound("overrideSound"); // Play override sound when enabled
-            if (!isMultiplayer && currentPlayer === "O") {
-                currentPlayer = "X"; // Switch back to player if AI's turn
-                updateDisplay(); // Update UI immediately
-            }
-        } else if (!isMultiplayer && currentPlayer === "O") {
-            setTimeout(aiMove, 500); // AI moves if override is disabled during its turn
-        }
-    });
-}
 
 // Handle cell click by player
 function handleCellClick(index) {
-    const overrideMode = document.getElementById("overrideMode").checked; // Check if override mode is active
     // Prevent click if game is inactive, cell is taken (unless override), or AI's turn without override
-    if (!gameActive || (!overrideMode && board[index] !== null) || (!isMultiplayer && currentPlayer === "O" && !overrideMode)) return;
     playSound("actionSound"); // Play action sound on click
     board[index] = currentPlayer; // Set cell to current player's symbol
     updateBoard(); // Update board visuals
@@ -278,6 +270,7 @@ function resetGame() {
         portalOverlay.style.display = "none"; // Hide portal
         document.getElementById("result").textContent = ""; // Clear result message
     }, 2000); // 2-second delay for portal effect
+
 }
 
 // Play audio sound with error handling

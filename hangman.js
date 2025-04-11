@@ -45,7 +45,6 @@ function updateDisplay() {
     document.getElementById("score").textContent = `Score: ${score}`;
     const wordDisplay = currentWord.split("").map(letter => guessedLetters.includes(letter) ? letter : "_").join(" ");
     document.getElementById("word").textContent = wordDisplay;
-    document.getElementById("hangman").textContent = drawHangman(wrongGuesses);
     const resultElement = document.getElementById("result");
     if (wrongGuesses >= maxGuesses) {
         resultElement.textContent = `Grid Overload! Element: ${currentWord}`;
@@ -84,12 +83,6 @@ function handleGuess(letter) {
     document.querySelector(`.key:contains('${letter}')`).disabled = true;
 }
 
-function drawHangman(guesses) {
-    const parts = [
-        "  O  \n", " /|\\\n", " /| \n", "  |  \n", " / \\\n", " /  \n"
-    ];
-    return "_____\n" + parts.slice(0, guesses).join("") + (guesses < 6 ? "    |\n    |\n" : "");
-}
 
 function disableKeyboard() {
     document.querySelectorAll(".key").forEach(key => key.disabled = true);
