@@ -1,285 +1,471 @@
-// Periodic table elements with their atomic numbers for layout
+// Game state variables
+let score = 0; // Tracks player's score
+let word = ''; // Current element name (uppercase)
+let guessedLetters = new Set(); // Tracks guessed letters
+let mistakes = 0; // Tracks incorrect letter guesses
+const maxMistakes = 6; // Maximum allowed mistakes before loss
+let gameActive = false; // Indicates if game is active
+let colorCycleInterval = null; // Tracks color cycling interval for hints
+let guessedElements = new Map(); // Tracks element guesses: name -> { correct: boolean }
+
+// Full periodic table data (118 elements with symbol, name, and position)
 const elements = [
-    { name: "hydrogen", number: 1 }, { name: "helium", number: 2 },
-    { name: "lithium", number: 3 }, { name: "beryllium", number: 4 }, { name: "boron", number: 5 },
-    { name: "carbon", number: 6 }, { name: "nitrogen", number: 7 }, { name: "oxygen", number: 8 },
-    { name: "fluorine", number: 9 }, { name: "neon", number: 10 },
-    { name: "sodium", number: 11 }, { name: "magnesium", number: 12 }, { name: "aluminum", number: 13 },
-    { name: "silicon", number: 14 }, { name: "phosphorus", number: 15 }, { name: "sulfur", number: 16 },
-    { name: "chlorine", number: 17 }, { name: "argon", number: 18 },
-    { name: "potassium", number: 19 }, { name: "calcium", number: 20 }, { name: "scandium", number: 21 },
-    { name: "titanium", number: 22 }, { name: "vanadium", number: 23 }, { name: "chromium", number: 24 },
-    { name: "manganese", number: 25 }, { name: "iron", number: 26 }, { name: "cobalt", number: 27 },
-    { name: "nickel", number: 28 }, { name: "copper", number: 29 }, { name: "zinc", number: 30 },
-    { name: "gallium", number: 31 }, { name: "germanium", number: 32 }, { name: "arsenic", number: 33 },
-    { name: "selenium", number: 34 }, { name: "bromine", number: 35 }, { name: "krypton", number: 36 },
-    { name: "rubidium", number: 37 }, { name: "strontium", number: 38 }, { name: "yttrium", number: 39 },
-    { name: "zirconium", number: 40 }, { name: "niobium", number: 41 }, { name: "molybdenum", number: 42 },
-    { name: "technetium", number: 43 }, { name: "ruthenium", number: 44 }, { name: "rhodium", number: 45 },
-    { name: "palladium", number: 46 }, { name: "silver", number: 47 }, { name: "cadmium", number: 48 },
-    { name: "indium", number: 49 }, { name: "tin", number: 50 }, { name: "antimony", number: 51 },
-    { name: "tellurium", number: 52 }, { name: "iodine", number: 53 }, { name: "xenon", number: 54 },
-    { name: "cesium", number: 55 }, { name: "barium", number: 56 }, { name: "lanthanum", number: 57 },
-    { name: "cerium", number: 58 }, { name: "praseodymium", number: 59 }, { name: "neodymium", number: 60 },
-    { name: "promethium", number: 61 }, { name: "samarium", number: 62 }, { name: "europium", number: 63 },
-    { name: "gadolinium", number: 64 }, { name: "terbium", number: 65 }, { name: "dysprosium", number: 66 },
-    { name: "holmium", number: 67 }, { name: "erbium", number: 68 }, { name: "thulium", number: 69 },
-    { name: "ytterbium", number: 70 }, { name: "lutetium", number: 71 }, { name: "hafnium", number: 72 },
-    { name: "tantalum", number: 73 }, { name: "tungsten", number: 74 }, { name: "rhenium", number: 75 },
-    { name: "osmium", number: 76 }, { name: "iridium", number: 77 }, { name: "platinum", number: 78 },
-    { name: "gold", number: 79 }, { name: "mercury", number: 80 }, { name: "thallium", number: 81 },
-    { name: "lead", number: 82 }, { name: "bismuth", number: 83 }, { name: "polonium", number: 84 },
-    { name: "astatine", number: 85 }, { name: "radon", number: 86 }, { name: "francium", number: 87 },
-    { name: "radium", number: 88 }, { name: "actinium", number: 89 }, { name: "thorium", number: 90 },
-    { name: "protactinium", number: 91 }, { name: "uranium", number: 92 }, { name: "neptunium", number: 93 },
-    { name: "plutonium", number: 94 }, { name: "americium", number: 95 }, { name: "curium", number: 96 },
-    { name: "berkelium", number: 97 }, { name: "californium", number: 98 }, { name: "einsteinium", number: 99 },
-    { name: "fermium", number: 100 }, { name: "mendelevium", number: 101 }, { name: "nobelium", number: 102 },
-    { name: "lawrencium", number: 103 }, { name: "rutherfordium", number: 104 }, { name: "dubnium", number: 105 },
-    { name: "seaborgium", number: 106 }, { name: "bohrium", number: 107 }, { name: "hassium", number: 108 },
-    { name: "meitnerium", number: 109 }, { name: "darmstadtium", number: 110 }, { name: "roentgenium", number: 111 },
-    { name: "copernicium", number: 112 }, { name: "nihonium", number: 113 }, { name: "flerovium", number: 114 },
-    { name: "moscovium", number: 115 }, { name: "livermorium", number: 116 }, { name: "tennessine", number: 117 },
-    { name: "oganesson", number: 118 }
+    { symbol: 'H', name: 'Hydrogen', row: 1, col: 1 },
+    { symbol: 'He', name: 'Helium', row: 1, col: 18 },
+    { symbol: 'Li', name: 'Lithium', row: 2, col: 1 },
+    { symbol: 'Be', name: 'Beryllium', row: 2, col: 2 },
+    { symbol: 'B', name: 'Boron', row: 2, col: 13 },
+    { symbol: 'C', name: 'Carbon', row: 2, col: 14 },
+    { symbol: 'N', name: 'Nitrogen', row: 2, col: 15 },
+    { symbol: 'O', name: 'Oxygen', row: 2, col: 16 },
+    { symbol: 'F', name: 'Fluorine', row: 2, col: 17 },
+    { symbol: 'Ne', name: 'Neon', row: 2, col: 18 },
+    { symbol: 'Na', name: 'Sodium', row: 3, col: 1 },
+    { symbol: 'Mg', name: 'Magnesium', row: 3, col: 2 },
+    { symbol: 'Al', name: 'Aluminium', row: 3, col: 13 },
+    { symbol: 'Si', name: 'Silicon', row: 3, col: 14 },
+    { symbol: 'P', name: 'Phosphorus', row: 3, col: 15 },
+    { symbol: 'S', name: 'Sulfur', row: 3, col: 16 },
+    { symbol: 'Cl', name: 'Chlorine', row: 3, col: 17 },
+    { symbol: 'Ar', name: 'Argon', row: 3, col: 18 },
+    { symbol: 'K', name: 'Potassium', row: 4, col: 1 },
+    { symbol: 'Ca', name: 'Calcium', row: 4, col: 2 },
+    { symbol: 'Sc', name: 'Scandium', row: 4, col: 3 },
+    { symbol: 'Ti', name: 'Titanium', row: 4, col: 4 },
+    { symbol: 'V', name: 'Vanadium', row: 4, col: 5 },
+    { symbol: 'Cr', name: 'Chromium', row: 4, col: 6 },
+    { symbol: 'Mn', name: 'Manganese', row: 4, col: 7 },
+    { symbol: 'Fe', name: 'Iron', row: 4, col: 8 },
+    { symbol: 'Co', name: 'Cobalt', row: 4, col: 9 },
+    { symbol: 'Ni', name: 'Nickel', row: 4, col: 10 },
+    { symbol: 'Cu', name: 'Copper', row: 4, col: 11 },
+    { symbol: 'Zn', name: 'Zinc', row: 4, col: 12 },
+    { symbol: 'Ga', name: 'Gallium', row: 4, col: 13 },
+    { symbol: 'Ge', name: 'Germanium', row: 4, col: 14 },
+    { symbol: 'As', name: 'Arsenic', row: 4, col: 15 },
+    { symbol: 'Se', name: 'Selenium', row: 4, col: 16 },
+    { symbol: 'Br', name: 'Bromine', row: 4, col: 17 },
+    { symbol: 'Kr', name: 'Krypton', row: 4, col: 18 },
+    { symbol: 'Rb', name: 'Rubidium', row: 5, col: 1 },
+    { symbol: 'Sr', name: 'Strontium', row: 5, col: 2 },
+    { symbol: 'Y', name: 'Yttrium', row: 5, col: 3 },
+    { symbol: 'Zr', name: 'Zirconium', row: 5, col: 4 },
+    { symbol: 'Nb', name: 'Niobium', row: 5, col: 5 },
+    { symbol: 'Mo', name: 'Molybdenum', row: 5, col: 6 },
+    { symbol: 'Tc', name: 'Technetium', row: 5, col: 7 },
+    { symbol: 'Ru', name: 'Ruthenium', row: 5, col: 8 },
+    { symbol: 'Rh', name: 'Rhodium', row: 5, col: 9 },
+    { symbol: 'Pd', name: 'Palladium', row: 5, col: 10 },
+    { symbol: 'Ag', name: 'Silver', row: 5, col: 11 },
+    { symbol: 'Cd', name: 'Cadmium', row: 5, col: 12 },
+    { symbol: 'In', name: 'Indium', row: 5, col: 13 },
+    { symbol: 'Sn', name: 'Tin', row: 5, col: 14 },
+    { symbol: 'Sb', name: 'Antimony', row: 5, col: 15 },
+    { symbol: 'Te', name: 'Tellurium', row: 5, col: 16 },
+    { symbol: 'I', name: 'Iodine', row: 5, col: 17 },
+    { symbol: 'Xe', name: 'Xenon', row: 5, col: 18 },
+    { symbol: 'Cs', name: 'Caesium', row: 6, col: 1 },
+    { symbol: 'Ba', name: 'Barium', row: 6, col: 2 },
+    { symbol: 'La', name: 'Lanthanum', row: 6, col: 3 },
+    { symbol: 'Ce', name: 'Cerium', row: 8, col: 4 },
+    { symbol: 'Pr', name: 'Praseodymium', row: 8, col: 5 },
+    { symbol: 'Nd', name: 'Neodymium', row: 8, col: 6 },
+    { symbol: 'Pm', name: 'Promethium', row: 8, col: 7 },
+    { symbol: 'Sm', name: 'Samarium', row: 8, col: 8 },
+    { symbol: 'Eu', name: 'Europium', row: 8, col: 9 },
+    { symbol: 'Gd', name: 'Gadolinium', row: 8, col: 10 },
+    { symbol: 'Tb', name: 'Terbium', row: 8, col: 11 },
+    { symbol: 'Dy', name: 'Dysprosium', row: 8, col: 12 },
+    { symbol: 'Ho', name: 'Holmium', row: 8, col: 13 },
+    { symbol: 'Er', name: 'Erbium', row: 8, col: 14 },
+    { symbol: 'Tm', name: 'Thulium', row: 8, col: 15 },
+    { symbol: 'Yb', name: 'Ytterbium', row: 8, col: 16 },
+    { symbol: 'Lu', name: 'Lutetium', row: 8, col: 17 },
+    { symbol: 'Hf', name: 'Hafnium', row: 6, col: 4 },
+    { symbol: 'Ta', name: 'Tantalum', row: 6, col: 5 },
+    { symbol: 'W', name: 'Tungsten', row: 6, col: 6 },
+    { symbol: 'Re', name: 'Rhenium', row: 6, col: 7 },
+    { symbol: 'Os', name: 'Osmium', row: 6, col: 8 },
+    { symbol: 'Ir', name: 'Iridium', row: 6, col: 9 },
+    { symbol: 'Pt', name: 'Platinum', row: 6, col: 10 },
+    { symbol: 'Au', name: 'Gold', row: 6, col: 11 },
+    { symbol: 'Hg', name: 'Mercury', row: 6, col: 12 },
+    { symbol: 'Tl', name: 'Thallium', row: 6, col: 13 },
+    { symbol: 'Pb', name: 'Lead', row: 6, col: 14 },
+    { symbol: 'Bi', name: 'Bismuth', row: 6, col: 15 },
+    { symbol: 'Po', name: 'Polonium', row: 6, col: 16 },
+    { symbol: 'At', name: 'Astatine', row: 6, col: 17 },
+    { symbol: 'Rn', name: 'Radon', row: 6, col: 18 },
+    { symbol: 'Fr', name: 'Francium', row: 7, col: 1 },
+    { symbol: 'Ra', name: 'Radium', row: 7, col: 2 },
+    { symbol: 'Ac', name: 'Actinium', row: 7, col: 3 },
+    { symbol: 'Th', name: 'Thorium', row: 9, col: 4 },
+    { symbol: 'Pa', name: 'Protactinium', row: 9, col: 5 },
+    { symbol: 'U', name: 'Uranium', row: 9, col: 6 },
+    { symbol: 'Np', name: 'Neptunium', row: 9, col: 7 },
+    { symbol: 'Pu', name: 'Plutonium', row: 9, col: 8 },
+    { symbol: 'Am', name: 'Americium', row: 9, col: 9 },
+    { symbol: 'Cm', name: 'Curium', row: 9, col: 10 },
+    { symbol: 'Bk', name: 'Berkelium', row: 9, col: 11 },
+    { symbol: 'Cf', name: 'Californium', row: 9, col: 12 },
+    { symbol: 'Es', name: 'Einsteinium', row: 9, col: 13 },
+    { symbol: 'Fm', name: 'Fermium', row: 9, col: 14 },
+    { symbol: 'Md', name: 'Mendelevium', row: 9, col: 15 },
+    { symbol: 'No', name: 'Nobelium', row: 9, col: 16 },
+    { symbol: 'Lr', name: 'Lawrencium', row: 9, col: 17 },
+    { symbol: 'Rf', name: 'Rutherfordium', row: 7, col: 4 },
+    { symbol: 'Db', name: 'Dubnium', row: 7, col: 5 },
+    { symbol: 'Sg', name: 'Seaborgium', row: 7, col: 6 },
+    { symbol: 'Bh', name: 'Bohrium', row: 7, col: 7 },
+    { symbol: 'Hs', name: 'Hassium', row: 7, col: 8 },
+    { symbol: 'Mt', name: 'Meitnerium', row: 7, col: 9 },
+    { symbol: 'Ds', name: 'Darmstadtium', row: 7, col: 10 },
+    { symbol: 'Rg', name: 'Roentgenium', row: 7, col: 11 },
+    { symbol: 'Cn', name: 'Copernicium', row: 7, col: 12 },
+    { symbol: 'Nh', name: 'Nihonium', row: 7, col: 13 },
+    { symbol: 'Fl', name: 'Flerovium', row: 7, col: 14 },
+    { symbol: 'Mc', name: 'Moscovium', row: 7, col: 15 },
+    { symbol: 'Lv', name: 'Livermorium', row: 7, col: 16 },
+    { symbol: 'Ts', name: 'Tennessine', row: 7, col: 17 },
+    { symbol: 'Og', name: 'Oganesson', row: 7, col: 18 }
 ];
 
-// Game state variables
-let currentWord = "";
-let guessedLetters = [];
-let wrongGuesses = 0;
-let score = 0;
-const maxGuesses = 6;
-let guessedElements = new Map(); // Tracks guessed elements and correctness
+// Hangman stages (ASCII art for visual progress)
+const hangmanStages = [
+    `
+      ------
+      |    |
+           |
+           |
+           |
+           |
+    =========`, // Empty stage
+    `
+      ------
+      |    |
+      O    |
+           |
+           |
+           |
+    =========`, // Head added
+    `
+      ------
+      |    |
+      O    |
+      |    |
+           |
+           |
+    =========`, // Torso added
+    `
+      ------
+      |    |
+      O    |
+     /|    |
+           |
+           |
+    =========`, // Left arm added
+    `
+      ------
+      |    |
+      O    |
+     /|\\   |
+           |
+           |
+    =========`, // Right arm added
+    `
+      ------
+      |    |
+      O    |
+     /|\\   |
+     /     |
+           |
+    =========`, // Left leg added
+    `
+      ------
+      |    |
+      O    |
+     /|\\   |
+     / \\   |
+           |
+    =========` // Right leg added (game over)
+];
 
-// Initialize page with portal effect
+// Initialize page when DOM is fully loaded
 function initPage() {
+    // Get key DOM elements
     const portalOverlay = document.getElementById("portal-overlay");
     const mainContent = document.getElementById("main-content");
+
+    // Set initial visibility states
+    portalOverlay.style.display = "flex"; // Show portal overlay
+    mainContent.style.display = "none"; // Hide main content
+    document.body.style.overflow = "hidden"; // Prevent scrolling during portal
+
+    // Transition to game after portal animation (2 seconds)
     setTimeout(() => {
-        portalOverlay.style.display = "none";
-        mainContent.style.display = "flex";
-        document.body.style.overflow = "auto";
-        startGame();
+        portalOverlay.style.display = "none"; // Hide portal
+        mainContent.style.display = "block"; // Show game
+        document.body.style.overflow = "auto"; // Restore scrolling
+        startGame(); // Begin game
     }, 2000);
+
+    // Disable Hangman button to indicate current page
+    const hangmanButton = document.querySelector("button[onclick=\"portalTransition('hangman.html')\"]");
+    if (hangmanButton) hangmanButton.disabled = true;
 }
 
-// Start a new game round
+// Start a new game
 function startGame() {
-    // Pick a random un-guessed element
-    let availableElements = elements.filter(el => !guessedElements.has(el.name));
-    if (availableElements.length === 0) {
-        guessedElements.clear();
-        availableElements = elements;
-    }
-    currentWord = availableElements[Math.floor(Math.random() * availableElements.length)].name.toLowerCase();
-    guessedLetters = [];
-    wrongGuesses = 0;
-    updateDisplay();
-    createKeyboard();
-    createPeriodicTable();
-    cycleColors("result");
+    // Reset game state
+    gameActive = true; // Enable gameplay
+    mistakes = 0; // Reset mistakes
+    guessedLetters.clear(); // Clear guessed letters
+    guessedElements.clear(); // Clear element guesses
+    word = elements[Math.floor(Math.random() * elements.length)].name.toUpperCase(); // Pick random element name
+    stopColorCycle(); // Clear any color cycling
+
+    // Update display and setup UI
+    updateDisplay(); // Refresh game visuals
+    setupKeyboard(); // Create letter buttons
+    setupPeriodicTable(); // Build periodic table
+    document.getElementById("hint").onclick = getHint; // Bind hint button
 }
 
-// Update game display
+// Update game visuals
 function updateDisplay() {
+    // Update score display
     document.getElementById("score").textContent = `Score: ${score}`;
-    const wordDisplay = currentWord.split("").map(letter =>
-        guessedLetters.includes(letter) ? letter : "_").join(" ");
+
+    // Update hangman figure based on mistakes
+    document.getElementById("hangman").textContent = hangmanStages[mistakes];
+
+    // Update word display with guessed/unguessed letters
+    const wordDisplay = word
+        .split('')
+        .map(letter => (guessedLetters.has(letter) ? letter : '_'))
+        .join(' ');
     document.getElementById("word").textContent = wordDisplay;
-    const resultElement = document.getElementById("result");
-    if (wrongGuesses >= maxGuesses) {
-        resultElement.textContent = `Game Over! Element: ${currentWord}`;
-        playSound("loseSound");
-        guessedElements.set(currentWord, false);
-        updatePeriodicTable(currentWord, false);
-        disableKeyboard();
-        setTimeout(startGame, 2000);
-    } else if (!wordDisplay.includes("_")) {
-        score++;
-        resultElement.textContent = "Element Decoded!";
-        playSound("winSound");
-        guessedElements.set(currentWord, true);
-        updatePeriodicTable(currentWord, true);
-        disableKeyboard();
-        setTimeout(startGame, 2000);
-    } else {
-        resultElement.textContent = "";
+
+    // Update keyboard button states
+    document.querySelectorAll(".keyboard button").forEach(btn => {
+        const letter = btn.textContent;
+        btn.disabled = guessedLetters.has(letter); // Disable guessed letters
+    });
+
+    // Update periodic table highlights
+    document.querySelectorAll(".element:not(.empty)").forEach(el => {
+        const name = el.dataset.name.toUpperCase();
+        if (guessedElements.has(name)) {
+            el.classList.add(guessedElements.get(name).correct ? "correct" : "incorrect"); // Apply highlight
+            el.classList.add("disabled"); // Disable guessed elements
+        } else {
+            el.classList.remove("correct", "incorrect", "disabled"); // Reset un-guessed elements
+        }
+    });
+
+    // Check win/loss conditions
+    if (mistakes >= maxMistakes) {
+        endGame(false); // Game over if max mistakes reached
+    } else if (word.split('').every(letter => guessedLetters.has(letter))) {
+        endGame(true); // Win if all letters guessed
     }
 }
 
-// Create virtual keyboard
-function createKeyboard() {
+// Setup keyboard with letter buttons
+function setupKeyboard() {
     const keyboard = document.getElementById("keyboard");
-    keyboard.innerHTML = "";
-    for (let i = 97; i <= 122; i++) {
+    keyboard.innerHTML = ''; // Clear existing buttons
+    for (let i = 65; i <= 90; i++) { // Loop through A-Z
         const letter = String.fromCharCode(i);
-        const key = document.createElement("button");
-        key.className = "key";
-        key.textContent = letter;
-        key.addEventListener("click", () => handleGuess(letter));
-        keyboard.appendChild(key);
+        const button = document.createElement("button");
+        button.className = "btn neon-btn"; // Neon style
+        button.textContent = letter; // Set letter
+        button.onclick = () => handleGuess(letter); // Bind click handler
+        keyboard.appendChild(button); // Add to keyboard
     }
 }
 
-// Handle letter guess
-function handleGuess(letter) {
-    if (guessedLetters.includes(letter) || wrongGuesses >= maxGuesses ||
-        !document.getElementById("word").textContent.includes("_")) return;
-    playSound("actionSound");
-    guessedLetters.push(letter);
-    if (!currentWord.includes(letter)) wrongGuesses++;
-    updateDisplay();
-    const keyButton = Array.from(document.querySelectorAll(".key")).find(
-        btn => btn.textContent.toLowerCase() === letter
-    );
-    if (keyButton) keyButton.disabled = true;
-}
-
-// Draw hangman with ASCII art
-function drawHangman(guesses) {
-    const parts = [
-        "  O   ",
-        " /|\\   ",
-        " /|\\  ",
-        "  |   ",
-        "  |  ",
-        " / \\  "
-    ];
-    let figure = guesses > 0 ? parts.slice(0, guesses).join("\n") : "";
-    // Pad to maintain consistent height
-    while (figure.split("\n").length < 6) figure += "\n";
-    return figure;
-}
-
-// Disable keyboard
-function disableKeyboard() {
-    document.querySelectorAll(".key").forEach(key => key.disabled = true);
-}
-
-// Create periodic table in standard layout
-function createPeriodicTable() {
+// Setup scrollable periodic table
+function setupPeriodicTable() {
     const table = document.getElementById("periodic-table");
-    table.innerHTML = "";
+    table.innerHTML = ''; // Clear existing content
     const grid = document.createElement("div");
-    grid.className = "periodic-grid";
+    grid.className = "periodic-table-grid"; // Grid container
 
-    // Create 7 rows x 18 columns grid
-    for (let row = 1; row <= 7; row++) {
+    // Create a map for positioning elements
+    const positions = new Array(10).fill().map(() => new Array(19).fill(null)); // 10 rows, 19 cols (1-based indexing)
+
+    // Place elements in their correct grid positions
+    elements.forEach(element => {
+        positions[element.row][element.col] = element;
+    });
+
+    // Generate grid cells
+    for (let row = 1; row <= 9; row++) {
         for (let col = 1; col <= 18; col++) {
             const cell = document.createElement("div");
-            cell.className = "element-cell";
-            const element = elements.find(el => getElementPosition(el.number) === `${row},${col}`);
-            if (element) {
-                const btn = document.createElement("button");
-                btn.className = "element-btn";
-                btn.dataset.name = element.name;
-                btn.innerHTML = `<span class="element-number">${element.number}</span><span class="element-name">${element.name}</span>`;
-                if (guessedElements.has(element.name)) {
-                    btn.classList.add(guessedElements.get(element.name) ? "correct" : "incorrect");
-                }
-                cell.appendChild(btn);
-            } else if ((row === 6 && col === 3) || (row === 7 && col === 3)) {
-                // Placeholder for lanthanides/actinides
-                cell.className = "element-cell placeholder";
-                cell.textContent = row === 6 ? "57-71" : "89-103";
+            cell.style.gridRow = row; // Set row position
+            cell.style.gridColumn = col; // Set column position
+            if (positions[row][col]) {
+                const element = positions[row][col];
+                cell.className = "element"; // Element styling
+                cell.textContent = element.symbol; // Display symbol
+                cell.dataset.name = element.name; // Store name for guessing
+                cell.onclick = () => guessElement(element.name.toUpperCase()); // Bind click handler
+            } else {
+                cell.className = "element empty"; // Empty cell for gaps
             }
-            grid.appendChild(cell);
+            grid.appendChild(cell); // Add to grid
         }
     }
 
-    // Add lanthanides and actinides
-    const fBlock = document.createElement("div");
-    fBlock.className = "f-block";
-    const lanthanides = elements.filter(el => el.number >= 57 && el.number <= 71);
-    const actinides = elements.filter(el => el.number >= 89 && el.number <= 103);
-
-    [lanthanides, actinides].forEach(series => {
-        const row = document.createElement("div");
-        row.className = "f-block-row";
-        series.forEach(element => {
-            const cell = document.createElement("div");
-            cell.className = "element-cell";
-            const btn = document.createElement("button");
-            btn.className = "element-btn";
-            btn.dataset.name = element.name;
-            btn.innerHTML = `<span class="element-number">${element.number}</span><span class="element-name">${element.name}</span>`;
-            if (guessedElements.has(element.name)) {
-                btn.classList.add(guessedElements.get(element.name) ? "correct" : "incorrect");
-            }
-            cell.appendChild(btn);
-            row.appendChild(cell);
-        });
-        fBlock.appendChild(row);
-    });
-
-    grid.appendChild(fBlock);
-    table.appendChild(grid);
+    table.appendChild(grid); // Add grid to table container
 }
 
-// Map atomic number to periodic table position (row,col)
-function getElementPosition(number) {
-    if (number === 1) return "1,1";
-    if (number === 2) return "1,18";
-    if (number >= 3 && number <= 4) return "2," + (number - 2);
-    if (number >= 5 && number <= 10) return "2," + (number + 8);
-    if (number >= 11 && number <= 12) return "3," + (number - 10);
-    if (number >= 13 && number <= 18) return "3," + (number);
-    if (number >= 19 && number <= 20) return "4," + (number - 18);
-    if (number >= 21 && number <= 30) return "4," + (number - 18);
-    if (number >= 31 && number <= 36) return "4," + (number - 12);
-    if (number >= 37 && number <= 38) return "5," + (number - 36);
-    if (number >= 39 && number <= 48) return "5," + (number - 36);
-    if (number >= 49 && number <= 54) return "5," + (number - 30);
-    if (number >= 55 && number <= 56) return "6," + (number - 54);
-    if (number >= 72 && number <= 80) return "6," + (number - 69);
-    if (number >= 81 && number <= 86) return "6," + (number - 63);
-    if (number >= 87 && number <= 88) return "7," + (number - 86);
-    if (number >= 104 && number <= 112) return "7," + (number - 101);
-    if (number >= 113 && number <= 118) return "7," + (number - 95);
-    return null; // Lanthanides/Actinides handled separately
+// Handle letter guess via keyboard
+function handleGuess(letter) {
+    if (!gameActive || guessedLetters.has(letter)) return; // Ignore if inactive or already guessed
+    playSound("actionSound"); // Play action sound
+    guessedLetters.add(letter); // Record guess
+
+    if (!word.includes(letter)) {
+        mistakes++; // Increment mistakes for incorrect guess
+        playSound("loseSound"); // Play error sound
+    } else {
+        playSound("clickSound"); // Play success sound
+    }
+
+    updateDisplay(); // Refresh visuals
 }
 
-// Update periodic table colors
-function updatePeriodicTable(element, isCorrect) {
-    const btn = document.querySelector(`.element-btn[data-name="${element}"]`);
-    if (btn) {
-        btn.classList.add(isCorrect ? "correct" : "incorrect");
+// Guess an entire element name via periodic table
+function guessElement(name) {
+    if (!gameActive) return; // Ignore if game inactive
+    playSound("actionSound"); // Play action sound
+    guessedElements.set(name, { correct: name === word }); // Record guess with correctness
+    if (name === word) {
+        // Correct guess: reveal all letters
+        word.split('').forEach(letter => guessedLetters.add(letter));
+        playSound("winSound"); // Play win sound
+    } else {
+        // Incorrect guess: end game
+        mistakes = maxMistakes;
+        playSound("loseSound"); // Play error sound
+    }
+    updateDisplay(); // Refresh visuals
+}
+
+// Provide a hint by revealing a random unguessed letter
+function getHint() {
+    if (!gameActive) return; // Ignore if game inactive
+    playSound("clickSound"); // Play click sound
+    const unguessed = word.split('').filter(letter => !guessedLetters.has(letter));
+    if (unguessed.length > 0) {
+        const letter = unguessed[Math.floor(Math.random() * unguessed.length)]; // Pick random letter
+        guessedLetters.add(letter); // Reveal letter
+        updateDisplay(); // Refresh visuals
+        const resultElement = document.getElementById("result");
+        resultElement.textContent = `Hint: Revealed '${letter}'`; // Show hint message
+        stopColorCycle(); // Clear existing color cycle
+        cycleColors("result"); // Start color cycling for hint
     }
 }
 
-// Reset game
+// End the game (win or loss)
+function endGame(won) {
+    gameActive = false; // Disable gameplay
+    const resultElement = document.getElementById("result");
+    stopColorCycle(); // Clear color cycling
+    resultElement.classList.remove("glowVictory", "glowLoss"); // Remove glow classes
+
+    if (won) {
+        score += 10; // Award points for win
+        resultElement.textContent = `Success! Element: ${word}`; // Show win message
+        resultElement.classList.add("glowVictory"); // Apply green glow
+        playSound("winSound"); // Play win sound
+        // Ensure correct element is highlighted
+        guessedElements.set(word, { correct: true });
+    } else {
+        resultElement.textContent = `Game Over! Element was: ${word}`; // Show loss message
+        resultElement.classList.add("glowLoss"); // Apply red glow
+        playSound("loseSound"); // Play error sound
+    }
+
+    updateDisplay(); // Update highlights
+
+    // Start new game after 3 seconds
+    setTimeout(startGame, 3000);
+}
+
+// Reset game state
 function resetGame() {
-    playSound("clickSound");
+    playSound("clickSound"); // Play click sound
     const portalOverlay = document.getElementById("portal-overlay");
     const mainContent = document.getElementById("main-content");
-    mainContent.style.display = "none";
-    portalOverlay.style.display = "flex";
+    const resultElement = document.getElementById("result");
+
+    // Reset all state
+    score = 0; // Clear score
+    resultElement.classList.remove("glowVictory", "glowLoss"); // Remove glows
+    stopColorCycle(); // Clear color cycling
+    resultElement.textContent = ""; // Clear result text
+
+    // Show portal and restart
+    mainContent.style.display = "none"; // Hide game
+    portalOverlay.style.display = "flex"; // Show portal
     setTimeout(() => {
-        portalOverlay.style.display = "none";
-        mainContent.style.display = "flex";
-        score = 0;
-        guessedElements.clear();
-        startGame();
-    }, 2000);
+        portalOverlay.style.display = "none"; // Hide portal
+        mainContent.style.display = "block"; // Show game
+        startGame(); // Begin new game
+    }, 2000); // Match portal animation duration
 }
 
-// Play sound effect
+// Play audio sound with error handling
 function playSound(soundId) {
     const sound = document.getElementById(soundId);
-    if (sound) sound.play().catch(error => console.log("Sound play error:", error));
+    if (sound) {
+        sound.currentTime = 0; // Reset to start
+        sound.play().catch(error => console.log("Sound play error:", error)); // Play with error logging
+    }
 }
 
-// Cycle colors for result text
+// Cycle colors for hint messages
 function cycleColors(elementId) {
     const element = document.getElementById(elementId);
-    const colors = ["#00ccff", "#ff00ff", "#00ff00", "#ffff00", "#ff6600"];
-    let index = 0;
-    setInterval(() => {
-        element.style.color = colors[index];
-        element.style.textShadow = `0 0 5px ${colors[index]}, 0 0 10px ${colors[index]}, 0 0 20px ${colors[index]}`;
-        index = (index + 1) % colors.length;
+    const colors = ["#00ccff", "#ff00ff", "#00ff00", "#ffff00", "#ff6600"]; // Neon color palette
+    let index = 0; // Current color index
+
+    // Clear existing interval
+    stopColorCycle();
+
+    // Start color cycling every 700ms
+    colorCycleInterval = setInterval(() => {
+        element.style.color = colors[index]; // Set text color
+        element.style.textShadow = `0 0 5px ${colors[index]}, 0 0 10px ${colors[index]}, 0 0 20px ${colors[index]}`; // Set glow
+        index = (index + 1) % colors.length; // Move to next color
     }, 700);
 }
 
-// Initialize on load
+// Stop color cycling and reset style
+function stopColorCycle() {
+    if (colorCycleInterval) {
+        clearInterval(colorCycleInterval); // Clear interval
+        colorCycleInterval = null; // Reset tracker
+        const resultElement = document.getElementById("result");
+        resultElement.style.color = "#00ccff"; // Reset to cyan
+        resultElement.style.textShadow = "0 0 5px #00ccff, 0 0 10px #00ccff, 0 0 20px #00ccff"; // Reset glow
+    }
+}
+
+// Handle navigation to other pages
+function portalTransition(url) {
+    const portalOverlay = document.getElementById("portal-overlay");
+    const mainContent = document.getElementById("main-content");
+    playSound("clickSound"); // Play click sound
+    mainContent.style.display = "none"; // Hide game
+    portalOverlay.style.display = "flex"; // Show portal
+    setTimeout(() => window.location.href = url, 2000); // Redirect after 2s
+}
+
+// Initialize page on DOM load
 document.addEventListener("DOMContentLoaded", initPage);

@@ -1,9 +1,9 @@
 /* Base styles */
 body {
-    background: linear-gradient(135deg, #0d0015, #1a0033); /* Neon gradient */
+    background: linear-gradient(135deg, #0d0015, #1a0033); /* Neon gradient background */
     font-family: 'Orbitron', sans-serif; /* Futuristic font */
     color: #fff; /* White text */
-    min-height: 100vh; /* Full height */
+    min-height: 100vh; /* Full viewport height */
     margin: 0; /* No margins */
     padding: 0; /* No padding */
     overflow-x: hidden; /* Prevent horizontal scroll */
@@ -22,13 +22,39 @@ body {
     color: #ff00ff; /* Magenta color */
 }
 
+/* Victory text glow animation */
+@keyframes glowVictory {
+    0% {
+        text-shadow: 0 0 10px #28a745, 0 0 20px #28a745, 0 0 30px #28a745, 0 0 40px #28a745;
+    }
+    100% {
+        text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00, 0 0 50px #00ff00;
+    }
+}
+
+/* Loss text glow animation */
+@keyframes glowLoss {
+    0% {
+        text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000;
+    }
+    100% {
+        text-shadow: 0 0 20px #ff3333, 0 0 30px #ff3333, 0 0 40px #ff3333, 0 0 50px #ff3333;
+    }
+}
+
+/* Apply glow animations to result text */
+#VictoryTxt {
+    animation: glowVictory 1.5s ease-in-out infinite alternate;
+    color: #00ff00; /* Green text */
+}
+
 /* Neon button styling */
 .neon-btn {
     background: #00ccff; /* Cyan background */
     border: none; /* No border */
     color: #000; /* Black text */
     padding: 10px 20px; /* Padding */
-    text-transform: uppercase; /* Uppercase */
+    text-transform: uppercase; /* Uppercase text */
     box-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff; /* Cyan glow */
     transition: all 0.4s ease; /* Smooth transition */
 }
@@ -46,9 +72,17 @@ body {
     background: rgba(0, 0, 0, 0.9); /* Dark background */
     box-shadow: 0 0 5px #ff0000; /* Red glow */
     cursor: not-allowed; /* Disabled cursor */
+    opacity: 0.6; /* Slightly faded */
 }
 
-/* Sidebar styling, centered */
+/* Choice image styling */
+.choice-img {
+    width: 50px; /* Fixed width */
+    height: 50px; /* Fixed height */
+    object-fit: contain; /* Maintain aspect ratio */
+}
+
+/* Sidebar styling */
 .sidebar {
     background: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
     border-left: 2px solid #00ccff; /* Cyan border */
@@ -112,7 +146,7 @@ body {
     animation: swirl 2s linear infinite; /* Continuous rotation */
 }
 
-/* Selection box for game mode and name input */
+/* Selection box */
 .selection-box {
     background: rgba(0, 0, 0, 0.9); /* Dark background */
     border: 2px solid #ff00ff; /* Magenta border */
@@ -121,6 +155,7 @@ body {
     border-radius: 10px; /* Rounded corners */
     text-align: center; /* Centered text */
     transition: all 0.3s ease; /* Smooth transition */
+    width: 300px; /* Fixed width for consistency */
 }
 
 /* Selection box hover effect */
@@ -129,7 +164,7 @@ body {
     transform: scale(1.05); /* Slight scale up */
 }
 
-/* Portal box for navigation */
+/* Portal box */
 .portal-box {
     background: rgba(0, 0, 0, 0.9); /* Dark background */
     border: 2px solid #ff00ff; /* Magenta border */
@@ -186,6 +221,7 @@ body {
     .neon-text { font-size: 1.5rem; } /* Smaller title */
     .neon-subtext { font-size: 0.9rem; } /* Smaller subtext */
     .neon-btn { padding: 8px 15px; font-size: 0.8rem; } /* Smaller buttons */
+    .choice-img { width: 40px; height: 40px; } /* Smaller images */
 }
 
 /* Animation keyframes */
