@@ -26,27 +26,32 @@
         <div class="portal-circle animate-portal-entry"></div>
     </div>
 
-    <!-- Player selection overlay, hidden initially -->
-    <div id="player-selection" class="portal-overlay" style="display: none;">
+    <!-- Player selection overlay, visible initially -->
+    <div id="player-selection" class="portal-overlay">
         <!-- Selection box for game mode -->
         <div class="selection-box animate-fade-in">
             <!-- Title for mode selection -->
-            <h2 class="neon-text mb-4">Select Grid Mode</h2>
+            <h2 class="neon-text mb-4">Select Game Mode</h2>
             <!-- Grid layout for buttons -->
             <div class="d-grid gap-3">
                 <!-- Multiplayer mode button -->
-                <div><button id="multiPlayer" class="btn neon-btn animate-bounce mb-2">Dual Cyber Grid</button></div>
+                <div>
+                    <button id="multiPlayer" class="btn neon-btn animate-bounce mb-2">Dual Cyber Grid</button>
+                </div>
                 <!-- Single-player mode button with difficulty options -->
                 <div>
                     <button id="singlePlayer" class="btn neon-btn animate-bounce mb-3">Solo vs AI</button>
                     <!-- Difficulty selection centered below single-player button -->
                     <div class="text-center mb-3">
-                        <label class="neon-subtext me-3"><input type="radio" name="difficulty" value="easy" checked> Low
-                            Security</label>
-                        <label class="neon-subtext me-3"><input type="radio" name="difficulty" value="medium">
-                            Mid-Tier</label>
-                        <label class="neon-subtext me-3"><input type="radio" name="difficulty" value="hard">
-                            Firewall</label>
+                        <label class="neon-subtext me-3">
+                            <input type="radio" name="difficulty" value="easy" checked> Low Security
+                        </label>
+                        <label class="neon-subtext me-3">
+                            <input type="radio" name="difficulty" value="medium"> Mid-Tier
+                        </label>
+                        <label class="neon-subtext me-3">
+                            <input type="radio" name="difficulty" value="hard"> Firewall
+                        </label>
                     </div>
                 </div>
             </div>
@@ -96,8 +101,17 @@
                         <p id="turn" class="neon-subtext mb-3"></p>
                         <!-- Tic-Tac-Toe board -->
                         <div id="board" class="board mb-4 mx-auto"></div>
+                        <!-- Override mode toggle -->
+                        <div class="mb-3">
+                            <label class="neon-subtext">
+                                <input type="checkbox" id="overrideMode"> Override Mode
+                            </label>
+                        </div>
                         <!-- Result message -->
-                        <div id="result" class="neon-text animate-slide-in"></div>
+                        <div id="result" class="neon-text animate-slide-in">
+                            <span id="VictoryTxt" style="display: none;"></span>
+                            <span id="LossTxt" style="display: none;"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -128,11 +142,10 @@
     </div>
 
     <!-- Audio elements for sound effects -->
-    <audio id="clickSound" src="sounds/click.wav" preload="auto"></audio> <!-- Click sound -->
-    <audio id="winSound" src="sounds/win.wav" preload="auto"></audio> <!-- Win sound -->
-    <audio id="loseSound" src="sounds/lose.wav" preload="auto"></audio> <!-- Lose sound -->
-    <audio id="actionSound" src="sounds/action.wav" preload="auto"></audio> <!-- Action sound -->
-    <audio id="overrideSound" src="sounds/override.wav" preload="auto"></audio> <!-- Override sound -->
+    <audio id="clickSound" src="sounds/click.wav" preload="auto"></audio>
+    <audio id="winSound" src="sounds/win.wav" preload="auto"></audio>
+    <audio id="loseSound" src="sounds/lose.wav" preload="auto"></audio>
+    <audio id="actionSound" src="sounds/action.wav" preload="auto"></audio>
 
     <!-- JavaScript for game logic -->
     <script src="tic-tac-toe.js"></script>
