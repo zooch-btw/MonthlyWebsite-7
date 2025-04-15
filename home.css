@@ -9,19 +9,17 @@ body {
     overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
-/* Neon text effect for titles */
+/* Neon text effect */
 .neon-text {
     text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff, 0 0 20px #00ccff, 0 0 40px #00ccff; /* Cyan glow */
     color: #00ccff; /* Cyan color */
     font-weight: 700; /* Bold */
-    font-size: clamp(1.5rem, 5vw, 2.5rem); /* Responsive font size */
 }
 
-/* Neon subtext effect for secondary text */
+/* Neon subtext effect */
 .neon-subtext {
     text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff; /* Magenta glow */
     color: #ff00ff; /* Magenta color */
-    font-size: clamp(0.9rem, 3vw, 1.2rem); /* Responsive font size */
 }
 
 /* Neon button styling */
@@ -29,11 +27,10 @@ body {
     background: #00ccff; /* Cyan background */
     border: none; /* No border */
     color: #000; /* Black text */
-    padding: clamp(8px, 2vw, 12px) clamp(15px, 3vw, 20px); /* Responsive padding */
+    padding: 10px 20px; /* Padding */
     text-transform: uppercase; /* Uppercase text */
     box-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff; /* Cyan glow */
     transition: all 0.4s ease; /* Smooth transition */
-    font-size: clamp(0.8rem, 2.5vw, 1rem); /* Responsive font size */
 }
 
 /* Button hover effect */
@@ -44,37 +41,54 @@ body {
     transform: translateY(-3px); /* Slight lift */
 }
 
-/* Sidebar styling */
+/* Sidebar styling, centered */
 .sidebar {
     background: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
-    border: 2px solid #00ccff; /* Cyan border */
-    border-radius: 10px; /* Rounded corners */
-    padding: clamp(15px, 3vw, 20px); /* Responsive padding */
-    box-shadow: 0 0 15px #00ccff; /* Cyan shadow */
-    text-align: center; /* Center content */
+    border-left: 2px solid #00ccff; /* Cyan border */
+    height: 100vh; /* Full height */
+    position: fixed; /* Fixed position */
+    right: 0; /* Right-aligned */
+    top: 0; /* Top-aligned */
+    box-shadow: -5px 0 15px #00ccff; /* Cyan shadow */
+    display: flex; /* Flexbox for centering */
+    flex-direction: column; /* Vertical stacking */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    padding: 20px; /* Padding */
+    width: 25%; /* Fixed width */
+}
+
+/* Sidebar title */
+.sidebar h2.neon-text {
+    margin-bottom: 20px; /* Space below */
+    text-align: center; /* Centered text */
 }
 
 /* Portal overlay for transitions */
 .portal-overlay {
-    position: fixed; /* Cover entire viewport */
-    top: 0; /* Top edge */
-    left: 0; /* Left edge */
+    position: fixed; /* Fixed position */
+    top: 0; /* Top-aligned */
+    left: 0; /* Left-aligned */
     width: 100vw; /* Full width */
     height: 100vh; /* Full height */
     background: rgba(0, 0, 0, 0.9); /* Dark overlay */
-    display: flex; /* Center content */
+    display: flex; /* Flexbox centering */
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
-    z-index: 1000; /* Above all elements */
+    z-index: 1000; /* Above all */
 }
 
 /* Portal circle animation */
 .portal-circle {
-    width: clamp(100px, 15vw, 150px); /* Responsive size */
-    height: clamp(100px, 15vw, 150px); /* Responsive size */
+    width: 15vw; /* Responsive width */
+    height: 15vw; /* Responsive height */
+    max-width: 200px; /* Max size */
+    max-height: 200px; /* Max size */
+    min-width: 150px; /* Min size */
+    min-height: 150px; /* Min size */
     background: radial-gradient(circle, #00ff00, #00cc00, #009900); /* Green gradient */
-    border-radius: 50%; /* Circular shape */
-    box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00; /* Green glow */
+    border-radius: 50%; /* Circular */
+    box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff00, 0 0 100px #00ff00; /* Green glow */
     position: relative; /* For pseudo-element */
     overflow: hidden; /* Hide overflow */
 }
@@ -95,16 +109,20 @@ body {
 .portal-box {
     background: rgba(0, 0, 0, 0.9); /* Dark background */
     border: 2px solid #ff00ff; /* Magenta border */
-    padding: clamp(10px, 2vw, 15px); /* Responsive padding */
+    padding: 15px; /* Padding */
     box-shadow: 0 0 20px #ff00ff; /* Magenta glow */
     border-radius: 10px; /* Rounded corners */
     transition: all 0.3s ease; /* Smooth transition */
     width: 100%; /* Full width */
+    display: flex; /* Flexbox centering */
+    flex-direction: column; /* Vertical stacking */
+    align-items: center; /* Center horizontally */
+    text-align: center; /* Center text */
 }
 
 /* Portal box hover effect */
 .portal-box:hover {
-    box-shadow: 0 0 30px #00ccff; /* Cyan glow */
+    box-shadow: 0 0 30px #00ccff, 0 0 50px #00ccff; /* Cyan glow */
     transform: scale(1.05); /* Slight scale up */
 }
 
@@ -115,7 +133,6 @@ body {
     color: #fff; /* White text */
     box-shadow: 0 0 10px #00ccff; /* Cyan glow */
     transition: all 0.3s ease; /* Smooth transition */
-    font-size: clamp(0.9rem, 2.5vw, 1rem); /* Responsive font size */
 }
 
 /* Input focus styling */
@@ -126,58 +143,30 @@ body {
     color: #fff; /* White text */
 }
 
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .sidebar {
+        position: static; /* Normal flow */
+        height: auto; /* Auto height */
+        border-left: none; /* Remove border */
+        border-top: 2px solid #00ccff; /* Top border */
+        box-shadow: 0 -5px 15px #00ccff; /* Shadow upwards */
+        width: 100%; /* Full width */
+    }
+    .neon-text { font-size: 1.5rem; } /* Smaller title */
+    .neon-subtext { font-size: 0.9rem; } /* Smaller subtext */
+    .neon-btn { padding: 8px 15px; font-size: 0.8rem; } /* Smaller buttons */
+}
+
 /* Animation keyframes */
-@keyframes swirl {
-    0% { transform: rotate(0deg); } /* Start rotation */
-    100% { transform: rotate(360deg); } /* Full rotation */
-}
-
-@keyframes pulse {
-    0%, 100% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; } /* Cyan glow */
-    50% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; } /* Magenta glow */
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; } /* Transparent */
-    to { opacity: 1; } /* Opaque */
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); } /* Normal position */
-    50% { transform: translateY(-5px); } /* Bounce up */
-}
-
-@keyframes portalEntry {
-    0% { transform: scale(0) rotate(0deg); opacity: 0; } /* Start small */
-    50% { transform: scale(3) rotate(720deg); opacity: 1; } /* Grow and spin */
-    100% { transform: scale(20) rotate(1440deg); opacity: 0; } /* Fade out */
-}
+@keyframes swirl { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; } 50% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes portalEntry { 0% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { transform: scale(3) rotate(720deg); opacity: 1; } 100% { transform: scale(20) rotate(1440deg); opacity: 0; } }
 
 /* Animation classes */
 .animate-pulse { animation: pulse 2s infinite; }
 .animate-fade-in { animation: fadeIn 1s ease-in; }
 .animate-bounce { animation: bounce 1.5s infinite; }
 .animate-portal-entry { animation: portalEntry 2s ease forwards; }
-
-/* Responsive adjustments */
-@media (max-width: 576px) {
-    /* Small screens (mobile) */
-    .neon-text { font-size: clamp(1.2rem, 4vw, 1.8rem); } /* Smaller title */
-    .neon-subtext { font-size: clamp(0.7rem, 2.5vw, 0.9rem); } /* Smaller subtext */
-    .neon-btn { padding: 6px 12px; font-size: clamp(0.7rem, 2vw, 0.9rem); } /* Smaller buttons */
-    .sidebar { margin-top: 20px; } /* Space above sidebar */
-}
-
-@media (max-width: 768px) {
-    /* Tablets */
-    .sidebar { 
-        border: 2px solid #00ccff; /* Keep border */
-        border-radius: 10px; /* Rounded corners */
-    }
-}
-
-@media (min-width: 1200px) {
-    /* Large screens */
-    .neon-text { font-size: clamp(2rem, 4vw, 3rem); } /* Larger title */
-    .neon-subtext { font-size: clamp(1rem, 2vw, 1.3rem); } /* Larger subtext */
-}

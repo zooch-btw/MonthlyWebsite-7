@@ -1,47 +1,48 @@
 // Game state variables
-let player1Score = 0; // Player 1 score
-let player2Score = 0; // Player 2/AI score
-let currentPlayer = 1; // Current player (1 or 2)
-let player1Choice = null; // Player 1's choice
-let player2Choice = null; // Player 2's choice
-let currentRound = 1; // Current round
-const maxRounds = 5; // Max rounds per game
-let gameActive = false; // Game active status
-let isMultiplayer = false; // Multiplayer mode flag
-let difficulty = "easy"; // AI difficulty
-const player1Name = localStorage.getItem("userName") || "Cyber Warrior"; // Player 1 name
-let player2Name = localStorage.getItem("player2Name") || "Neon Striker"; // Player 2 name
-const choices = ["rock", "paper", "scissors"]; // Game choices
-let colorCycleInterval = null; // Color cycle interval
+let player1Score = 0; // Tracks Player 1's score
+let player2Score = 0; // Tracks Player 2's score
+let currentPlayer = 1; // Tracks current player (1 or 2)
+let player1Choice = null; // Stores Player 1's choice
+let player2Choice = null; // Stores Player 2's choice
+let currentRound = 1; // Tracks current round
+const maxRounds = 5; // Maximum number of rounds
+let gameActive = false; // Indicates if game is active
+let isMultiplayer = false; // Indicates multiplayer mode
+let difficulty = "easy"; // AI difficulty level
+const player1Name = localStorage.getItem("player1Name") || "Cyber Warrior"; // Player 1 name, default if not set
+let player2Name = localStorage.getItem("player2Name") || "Neon Striker"; // Player 2 name, default if not set
+const choices = ["rock", "paper", "scissors"]; // Possible game choices
+let colorCycleInterval = null; // NEW: Tracks color cycling interval
 
-// Initialize page
+// Initialize page on DOM load
 function initPage() {
-    const portalOverlay = document.getElementById("portal-overlay"); // Portal overlay
-    const playerSelection = document.getElementById("player-selection"); // Mode selection
-    const mainContent = document.getElementById("main-content"); // Main content
-    const player2NameOverlay = document.getElementById("player2-name"); // Player 2 name input
+    // Get DOM elements
+    const portalOverlay = document.getElementById("portal-overlay");
+    const playerSelection = document.getElementById("player-selection");
+    const mainContent = document.getElementById("main-content");
+    const player2NameOverlay = document.getElementById("player2-name");
 
-    // Set initial visibility
+    // Ensure initial states
     portalOverlay.style.display = "flex";
     playerSelection.style.display = "none";
     mainContent.style.display = "none";
     player2NameOverlay.style.display = "none";
     document.body.style.overflow = "hidden";
 
-    // Show mode selection after portal
+    // Transition to player selection after portal animation
     setTimeout(() => {
         portalOverlay.style.display = "none";
         playerSelection.style.display = "flex";
         document.body.style.overflow = "auto";
     }, 2000);
 
-    // Bind mode selection buttons
+    // Add event listeners for mode selection
     document.getElementById("singlePlayer").addEventListener("click", () => startGame(false));
     document.getElementById("multiPlayer").addEventListener("click", promptPlayer2Name);
     document.getElementById("confirmPlayer2Name").addEventListener("click", confirmPlayer2Name);
 }
 
-// Prompt for Player 2 name
+// Prompt for Player 2 name in multiplayer mode
 function promptPlayer2Name() {
     const playerSelection = document.getElementById("player-selection");
     const player2NameOverlay = document.getElementById("player2-name");
@@ -49,13 +50,14 @@ function promptPlayer2Name() {
     player2NameOverlay.style.display = "flex";
 }
 
-// Confirm Player 2 name
+// Confirm Player 2 name and start multiplayer game
 function confirmPlayer2Name() {
     const player2NameInput = document.getElementById("player2NameInput");
     const player2NameError = document.getElementById("player2NameError");
     let name = player2NameInput.value.trim();
-    const nameRegex = /^[a-zA-Z0-9\s]+$/;
+    const nameRegex = /^[a-zA-Z0-9\s]+$/; // Allow alphanumeric and spaces
 
+    // Validate name
     if (name.length === 0 || name.length > 20 || !nameRegex.test(name)) {
         name = "Neon Striker";
         player2NameInput.value = name;
@@ -72,8 +74,9 @@ function confirmPlayer2Name() {
     startGame(true);
 }
 
-// Start new game
+// Start a new game
 function startGame(multiplayer) {
+    // Reset game state
     isMultiplayer = multiplayer;
     gameActive = true;
     player1Score = 0;
@@ -86,28 +89,35 @@ function startGame(multiplayer) {
         difficulty = document.querySelector('input[name="difficulty"]:checked')?.value || "easy";
     }
 
+    // Show main content
     document.getElementById("player-selection").style.display = "none";
     document.getElementById("main-content").style.display = "block";
-    document.getElementById("VictoryTxt").style.display = "none";
-    document.getElementById("LossTxt").style.display = "none";
+
+    // Clear any existing color cycling
     stopColorCycle();
+
+    // Update display and setup buttons
     updateDisplay();
     setupChoiceButtons();
 }
 
 // Update game display
 function updateDisplay() {
+    // Update scores
     document.getElementById("player1Score").textContent = `${player1Name}: ${player1Score}`;
     document.getElementById("player2Score").textContent = `${isMultiplayer ? player2Name : "AI"}: ${player2Score}`;
+    // Update round info
     document.getElementById("roundInfo").textContent = `Round ${currentRound} of ${maxRounds}`;
+    // Update turn indicator
     document.getElementById("turn").textContent = `Turn: ${currentPlayer === 1 ? player1Name : (isMultiplayer ? player2Name : "AI")}`;
+    // Enable/disable choice buttons
     const buttons = document.querySelectorAll(".neon-btn[id='rock'], .neon-btn[id='paper'], .neon-btn[id='scissors']");
     buttons.forEach(btn => {
         btn.disabled = !gameActive || (!isMultiplayer && currentPlayer === 2);
     });
 }
 
-// Setup choice buttons
+// Setup choice button event listeners
 function setupChoiceButtons() {
     document.getElementById("rock").onclick = () => handleChoice("rock");
     document.getElementById("paper").onclick = () => handleChoice("paper");
@@ -139,10 +149,12 @@ function aiMove() {
     if (difficulty === "easy") {
         aiChoice = choices[Math.floor(Math.random() * 3)];
     } else if (difficulty === "medium") {
+        // 50% chance to counter, 50% random
         aiChoice = Math.random() > 0.5
             ? (player1Choice === "rock" ? "paper" : player1Choice === "paper" ? "scissors" : "rock")
             : choices[Math.floor(Math.random() * 3)];
     } else {
+        // Hard: always counter
         aiChoice = player1Choice === "rock" ? "paper" : player1Choice === "paper" ? "scissors" : "rock";
     }
     player2Choice = aiChoice;
@@ -152,17 +164,19 @@ function aiMove() {
 
 // Determine round winner
 function determineWinner() {
-    const victoryElement = document.getElementById("VictoryTxt");
-    const lossElement = document.getElementById("LossTxt");
-    victoryElement.style.display = "none";
-    lossElement.style.display = "none";
+    const resultElement = document.getElementById("result");
+    let result;
+    let glowClass = "";
+
+    // Reset any existing glow classes and color cycling
+    resultElement.classList.remove("glowVictory", "glowLoss");
     stopColorCycle();
 
-    let result;
     if (player1Choice === player2Choice) {
         result = "Grid Locked!";
+        // NEW: Start color cycling for ties
         cycleColors("result");
-        playSound("loseSound");
+        playSound("loseSound"); // Tie sound
     } else if (
         (player1Choice === "rock" && player2Choice === "scissors") ||
         (player1Choice === "paper" && player2Choice === "rock") ||
@@ -170,17 +184,22 @@ function determineWinner() {
     ) {
         result = `${player1Name} Wins!`;
         player1Score++;
-        victoryElement.textContent = result;
-        victoryElement.style.display = "inline";
+        glowClass = "glowVictory";
         playSound("winSound");
     } else {
         result = `${isMultiplayer ? player2Name : "AI"} Wins!`;
         player2Score++;
-        lossElement.textContent = result;
-        lossElement.style.display = "inline";
+        glowClass = "glowLoss";
         playSound("loseSound");
     }
 
+    // Apply result text and glow effect
+    resultElement.textContent = `${player1Name} chose ${player1Choice}, ${isMultiplayer ? player2Name : "AI"} chose ${player2Choice}. ${result}`;
+    if (glowClass) {
+        resultElement.classList.add(glowClass);
+    }
+
+    // Proceed to next round or end game
     currentRound++;
     if (currentRound > maxRounds) {
         endGame();
@@ -191,54 +210,66 @@ function determineWinner() {
     }
 }
 
-// End game
+// End the game
 function endGame() {
     gameActive = false;
-    const victoryElement = document.getElementById("VictoryTxt");
-    const lossElement = document.getElementById("LossTxt");
-    victoryElement.style.display = "none";
-    lossElement.style.display = "none";
+    const resultElement = document.getElementById("result");
+    let result;
+    let glowClass = "";
+
+    // Reset color cycling
     stopColorCycle();
 
-    let result;
+    // Determine final winner
     if (player1Score > player2Score) {
         result = `${player1Name} Wins the Duel!`;
-        victoryElement.textContent = result;
-        victoryElement.style.display = "inline";
+        glowClass = "glowVictory";
         playSound("winSound");
     } else if (player1Score < player2Score) {
         result = `${isMultiplayer ? player2Name : "AI"} Wins the Duel!`;
-        lossElement.textContent = result;
-        lossElement.style.display = "inline";
+        glowClass = "glowLoss";
         playSound("loseSound");
     } else {
         result = "Duel Ends in a Tie!";
+        // NEW: Start color cycling for final tie
         cycleColors("result");
         playSound("loseSound");
+    }
+
+    // Apply final result and glow effect
+    resultElement.classList.remove("glowVictory", "glowLoss");
+    resultElement.textContent = result;
+    if (glowClass) {
+        resultElement.classList.add(glowClass);
     }
 
     updateDisplay();
 }
 
-// Reset game
+// Reset game to mode selection
 function resetGame() {
     playSound("clickSound");
     const portalOverlay = document.getElementById("portal-overlay");
     const playerSelection = document.getElementById("player-selection");
     const mainContent = document.getElementById("main-content");
-    document.getElementById("VictoryTxt").style.display = "none";
-    document.getElementById("LossTxt").style.display = "none";
+    const resultElement = document.getElementById("result");
+
+    // Reset glow classes and color cycling
+    resultElement.classList.remove("glowVictory", "glowLoss");
     stopColorCycle();
+
+    // Show portal and transition
     mainContent.style.display = "none";
     portalOverlay.style.display = "flex";
     setTimeout(() => {
         gameActive = false;
         playerSelection.style.display = "flex";
         portalOverlay.style.display = "none";
+        resultElement.textContent = "";
     }, 2000);
 }
 
-// Play sound
+// Play audio sound
 function playSound(soundId) {
     const sound = document.getElementById(soundId);
     if (sound) {
@@ -247,31 +278,36 @@ function playSound(soundId) {
     }
 }
 
-// Cycle colors for result
+// NEW: Cycle colors for an element
 function cycleColors(elementId) {
     const element = document.getElementById(elementId);
-    const colors = ["#00ccff", "#ff00ff", "#00ff00", "#ffff00", "#ff6600"];
+    const colors = ["#00ccff", "#ff00ff", "#00ff00", "#ffff00", "#ff6600"]; // Neon theme colors
     let index = 0;
+
+    // Clear any existing interval
     stopColorCycle();
+
+    // Start new color cycling
     colorCycleInterval = setInterval(() => {
         element.style.color = colors[index];
         element.style.textShadow = `0 0 5px ${colors[index]}, 0 0 10px ${colors[index]}, 0 0 20px ${colors[index]}`;
         index = (index + 1) % colors.length;
-    }, 700);
+    }, 700); // Change every 700ms
 }
 
-// Stop color cycling
+// NEW: Stop color cycling
 function stopColorCycle() {
     if (colorCycleInterval) {
         clearInterval(colorCycleInterval);
         colorCycleInterval = null;
         const resultElement = document.getElementById("result");
+        // Reset to default neon-text style
         resultElement.style.color = "#00ccff";
         resultElement.style.textShadow = "0 0 5px #00ccff, 0 0 10px #00ccff, 0 0 20px #00ccff";
     }
 }
 
-// Portal transition
+// Handle portal transition
 function portalTransition(url) {
     const portalOverlay = document.getElementById("portal-overlay");
     const mainContent = document.getElementById("main-content");
@@ -281,5 +317,5 @@ function portalTransition(url) {
     setTimeout(() => window.location.href = url, 2000);
 }
 
-// Initialize page
+// Initialize page on DOM content loaded
 document.addEventListener("DOMContentLoaded", initPage);

@@ -2,18 +2,18 @@
 function initPage() {
     const portalOverlay = document.getElementById("portal-overlay"); // Portal overlay element
     const mainContent = document.getElementById("main-content"); // Main content element
-    // Show main content after 2s portal animation
+    // Show main content after portal animation
     setTimeout(() => {
-        portalOverlay.style.display = "none"; // Hide portal
-        mainContent.style.display = "block"; // Show content
+        portalOverlay.style.display = "none";
+        mainContent.style.display = "block";
         document.body.style.overflow = "auto"; // Enable scrolling
     }, 2000);
 
     const enterBtn = document.getElementById("enterBtn"); // Enter button
-    enterBtn.addEventListener("click", enterRealm); // Bind click event
+    enterBtn.addEventListener("click", enterRealm); // Add click event
 }
 
-// Handle entering the realm with username validation
+// Handle entering the realm
 function enterRealm() {
     const userNameInput = document.getElementById("userName"); // Username input
     const userNameError = document.getElementById("usernameError"); // Error message
@@ -32,16 +32,16 @@ function enterRealm() {
     }
 
     localStorage.setItem("userName", userName); // Store username
-    playSound("clickSound"); // Play click sound
+    playSound("clickSound"); // Play sound
     portalTransition("rps.html"); // Transition to RPS
 }
 
-// Play audio sound with error handling
+// Play audio sound
 function playSound(soundId) {
     const sound = document.getElementById(soundId); // Audio element
     if (sound) {
         sound.currentTime = 0; // Reset to start
-        sound.play().catch(error => console.log("Sound play error:", error)); // Play sound
+        sound.play().catch(error => console.log("Sound play error:", error)); // Play with error handling
     }
 }
 
@@ -49,11 +49,11 @@ function playSound(soundId) {
 function portalTransition(url) {
     const portalOverlay = document.getElementById("portal-overlay"); // Portal overlay
     const mainContent = document.getElementById("main-content"); // Main content
-    playSound("clickSound"); // Play click sound
+    playSound("clickSound"); // Play sound
     mainContent.style.display = "none"; // Hide content
     portalOverlay.style.display = "flex"; // Show portal
     setTimeout(() => window.location.href = url, 2000); // Redirect after 2s
 }
 
-// Bind initPage to DOM content loaded event
+// Event listener for DOM content loaded
 document.addEventListener("DOMContentLoaded", initPage);

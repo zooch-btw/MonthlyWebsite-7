@@ -1,149 +1,171 @@
-/* Base styles */
+/* Base styles for neon-cyberpunk theme */
 body {
-    background: linear-gradient(135deg, #0d0015, #1a0033); /* Neon gradient */
-    font-family: 'Orbitron', sans-serif; /* Futuristic font */
-    color: #fff; /* White text */
-    min-height: 100vh; /* Full height */
-    margin: 0; /* No margins */
-    padding: 0; /* No padding */
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    background: linear-gradient(135deg, #0d0015, #1a0033); /* Creates a dark gradient background */
+    font-family: 'Orbitron', sans-serif; /* Uses futuristic Orbitron font */
+    color: #fff; /* Sets default text color to white */
+    min-height: 100vh; /* Ensures full viewport height */
+    margin: 0; /* Removes default margins */
+    padding: 0; /* Removes default padding */
+    overflow-x: hidden; /* Prevents horizontal scrolling */
 }
 
-/* Neon text effect */
+/* Neon text effect for titles and main text */
 .neon-text {
-    text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff, 0 0 20px #00ccff, 0 0 40px #00ccff; /* Cyan glow */
-    color: #00ccff; /* Cyan color */
-    font-weight: 700; /* Bold */
-    font-size: clamp(1.5rem, 5vw, 2.5rem); /* Responsive font */
+    text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff, 0 0 20px #00ccff, 0 0 40px #00ccff; /* Cyan glow effect */
+    color: #00ccff; /* Cyan text color */
+    font-weight: 700; /* Bold text */
 }
 
-/* Neon subtext effect */
+/* Neon subtext effect for secondary text */
 .neon-subtext {
-    text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff; /* Magenta glow */
-    color: #ff00ff; /* Magenta color */
-    font-size: clamp(0.9rem, 3vw, 1.2rem); /* Responsive font */
+    text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff; /* Magenta glow effect */
+    color: #ff00ff; /* Magenta text color */
 }
 
-/* Victory glow animation */
+/* Victory glow animation for win results */
+.glowVictory {
+    animation: glowVictory 1.5s ease-in-out infinite alternate; /* Animates green glow */
+    color: #00ff00; /* Green text color */
+}
+
+/* Loss glow animation for loss results */
+.glowLoss {
+    animation: glowLoss 1.5s ease-in-out infinite alternate; /* Animates red glow */
+    color: #ff3333; /* Red text color */
+}
+
+/* Keyframes for victory glow animation */
 @keyframes glowVictory {
-    0% { text-shadow: 0 0 10px #28a745, 0 0 20px #28a745, 0 0 30px #28a745, 0 0 40px #28a745; }
-    100% { text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00, 0 0 50px #00ff00; }
+    0% {
+        text-shadow: 0 0 10px #28a745, 0 0 20px #28a745, 0 0 30px #28a745, 0 0 40px #28a745; /* Subtle green glow */
+    }
+    100% {
+        text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00, 0 0 50px #00ff00; /* Bright green glow */
+    }
 }
 
-/* Loss glow animation */
+/* Keyframes for loss glow animation */
 @keyframes glowLoss {
-    0% { text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000; }
-    100% { text-shadow: 0 0 20px #ff3333, 0 0 30px #ff3333, 0 0 40px #ff3333, 0 0 50px #ff3333; }
+    0% {
+        text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000; /* Subtle red glow */
+    }
+    100% {
+        text-shadow: 0 0 20px #ff3333, 0 0 30px #ff3333, 0 0 40px #ff3333, 0 0 50px #ff3333; /* Bright red glow */
+    }
 }
 
-/* Apply glow animations */
-#VictoryTxt {
-    animation: glowVictory 1.5s ease-in-out infinite alternate;
-    color: #00ff00; /* Green text */
+/* Result text styling for smooth transitions */
+#result {
+    transition: color 0.3s ease, text-shadow 0.3s ease; /* Ensures smooth color and glow changes */
 }
 
-#LossTxt {
-    animation: glowLoss 1.5s ease-in-out infinite alternate;
-    color: #ff3333; /* Red text */
-}
-
-/* Neon button styling */
+/* Neon button styling for interactive elements */
 .neon-btn {
     background: #00ccff; /* Cyan background */
     border: none; /* No border */
-    color: #000; /* Black text */
-    padding: clamp(8px, 2vw, 12px); /* Responsive padding */
-    text-transform: uppercase; /* Uppercase */
-    box-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff; /* Cyan glow */
-    transition: all 0.4s ease; /* Smooth transition */
-    font-size: clamp(0.8rem, 2.5vw, 1rem); /* Responsive font */
+    color: #000; /* Black text for contrast */
+    padding: 10px 20px; /* Comfortable padding */
+    text-transform: uppercase; /* Uppercase for sci-fi look */
+    box-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff; /* Cyan glow effect */
+    transition: all 0.4s ease; /* Smooth transitions for hover effects */
 }
 
 /* Button hover effect */
 .neon-btn:hover {
-    background: #ff00ff; /* Magenta background */
+    background: #ff00ff; /* Magenta background on hover */
     color: #fff; /* White text */
     box-shadow: 0 0 15px #ff00ff, 0 0 30px #ff00ff; /* Magenta glow */
-    transform: translateY(-3px); /* Lift effect */
+    transform: translateY(-3px); /* Slight lift effect */
 }
 
 /* Disabled button styling */
 .neon-btn:disabled {
-    background: rgba(0, 0, 0, 0.9); /* Dark background */
-    box-shadow: 0 0 5px #ff0000; /* Red glow */
+    background: rgba(0, 0, 0, 0.9); /* Dark background for disabled state */
+    box-shadow: 0 0 5px #ff0000; /* Red glow to indicate inactivity */
     cursor: not-allowed; /* Disabled cursor */
-    opacity: 0.6; /* Faded */
+    opacity: 0.6; /* Faded appearance */
 }
 
-/* Sidebar styling */
+/* Sidebar styling for navigation and periodic table */
 .sidebar {
-    background: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
-    border: 2px solid #00ccff; /* Cyan border */
-    border-radius: 10px; /* Rounded corners */
-    padding: clamp(15px, 3vw, 20px); /* Responsive padding */
-    box-shadow: 0 0 15px #00ccff; /* Cyan shadow */
-    text-align: center; /* Center content */
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+    border-left: 2px solid #00ccff; /* Cyan border on left */
+    height: 100vh; /* Full viewport height */
+    position: fixed; /* Fixed to right side */
+    right: 0; /* Aligned to right edge */
+    top: 0; /* Aligned to top */
+    box-shadow: -5px 0 15px #00ccff; /* Cyan shadow to left */
+    display: flex; /* Flexbox for vertical alignment */
+    flex-direction: column; /* Stack items vertically */
+    justify-content: flex-start; /* Start from top */
+    align-items: center; /* Center horizontally */
+    padding: 20px; /* Internal padding */
+    width: 25%; /* Fixed width (1/4 of screen) */
+    overflow-y: auto; /* Allow sidebar to scroll if content overflows */
 }
 
-/* Periodic table container */
+/* Scrollable periodic table container */
 .periodic-table.scrollable {
-    overflow-x: auto; /* Horizontal scroll */
-    overflow-y: auto; /* Vertical scroll */
-    width: 100%; /* Full width */
-    background: rgba(0, 0, 0, 0.7); /* Semi-transparent */
-    padding: 10px; /* Padding */
+    flex: 1; /* Takes available space in sidebar */
+    min-height: 0; /* Allows shrinking to fit content */
+    overflow-x: auto; /* Enables horizontal scrolling */
+    overflow-y: auto; /* Enables vertical scrolling */
+    width: 100%; /* Full sidebar width */
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    padding: 10px; /* Internal padding */
     border: 2px solid #ff00ff; /* Magenta border */
     border-radius: 5px; /* Rounded corners */
     box-shadow: 0 0 10px #ff00ff; /* Magenta glow */
 }
 
-/* Periodic table grid */
+/* Periodic table grid layout */
 .periodic-table-grid {
-    display: grid; /* Grid layout */
-    grid-template-columns: repeat(18, clamp(30px, 5vw, 40px)); /* Responsive columns */
-    grid-gap: 2px; /* Small gap */
-    min-width: clamp(540px, 90vw, 720px); /* Responsive width */
+    display: grid; /* Uses CSS grid for layout */
+    grid-template-columns: repeat(18, 40px); /* 18 columns for periodic table */
+    grid-gap: 2px; /* Small gap between elements */
+    min-width: 740px; /* Ensures all 18 columns (18 * 40px + gaps) are visible */
+    min-height: 100%; /* Fills container height for scrolling */
 }
 
-/* Element styling */
+/* Individual element in periodic table */
 .element {
-    width: clamp(30px, 5vw, 40px); /* Responsive size */
-    height: clamp(30px, 5vw, 40px); /* Responsive size */
-    background: #333; /* Dark background */
+    width: 40px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    background: #333; /* Default dark background */
     border: 1px solid #00ccff; /* Cyan border */
-    text-align: center; /* Center text */
-    line-height: clamp(30px, 5vw, 40px); /* Center vertically */
-    font-size: clamp(0.7rem, 2vw, 0.8rem); /* Responsive font */
+    text-align: center; /* Centers text */
+    line-height: 40px; /* Vertically centers text */
+    font-size: 0.8rem; /* Small text for symbols */
     color: #fff; /* White text */
-    cursor: pointer; /* Clickable */
-    transition: all 0.3s ease; /* Smooth transition */
+    cursor: pointer; /* Indicates clickability */
+    transition: all 0.3s ease; /* Smooth transitions */
 }
 
-/* Empty element */
+/* Empty cell in periodic table */
 .element.empty {
-    background: transparent; /* No background */
+    background: transparent; /* No background for empty cells */
     border: none; /* No border */
     cursor: default; /* Default cursor */
 }
 
 /* Element hover effect */
 .element:not(.empty):not(.disabled):hover {
-    background: #00ccff; /* Cyan background */
+    background: #00ccff; /* Cyan background on hover */
     box-shadow: 0 0 10px #00ccff; /* Cyan glow */
-    transform: scale(1.1); /* Scale up */
+    transform: scale(1.1); /* Slight scale up */
 }
 
-/* Correct element */
+/* Correctly guessed element */
 .element.correct {
     background: #00ff00; /* Green background */
-    box-shadow: 0 0 10px #00ff00; /* Green glow */
+    box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; /* Green glow */
     border-color: #00ff00; /* Green border */
 }
 
-/* Incorrect element */
+/* Incorrectly guessed element */
 .element.incorrect {
     background: #ff0000; /* Red background */
-    box-shadow: 0 0 10px #ff0000; /* Red glow */
+    box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; /* Red glow */
     border-color: #ff0000; /* Red border */
 }
 
@@ -151,130 +173,177 @@ body {
 .element.disabled {
     background: #222; /* Darker background */
     cursor: not-allowed; /* Disabled cursor */
-    opacity: 0.5; /* Faded */
+    opacity: 0.5; /* Faded appearance */
     border-color: #555; /* Dim border */
 }
 
-/* Hangman stage */
+/* Navigation portal box */
+.portal-box {
+    background: rgba(0, 0, 0, 0.9); /* Dark background */
+    border: 2px solid #ff00ff; /* Magenta border */
+    padding: 15px; /* Internal padding */
+    box-shadow: 0 0 20px #ff00ff; /* Magenta glow */
+    border-radius: 10px; /* Rounded corners */
+    transition: all 0.3s ease; /* Smooth transitions */
+    width: 100%; /* Full sidebar width */
+    display: flex; /* Flexbox for content */
+    flex-direction: column; /* Vertical stacking */
+    align-items: center; /* Center horizontally */
+    text-align: center; /* Center text */
+}
+
+/* Portal box hover effect */
+.portal-box:hover {
+    box-shadow: 0 0 30px #00ccff, 0 0 50px #00ccff; /* Cyan glow on hover */
+    transform: scale(1.05); /* Slight scale up */
+}
+
+/* Hangman stage container */
 .hangman-stage {
-    background: rgba(0, 0, 0, 0.7); /* Semi-transparent */
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
     border: 2px solid #00ccff; /* Cyan border */
     border-radius: 10px; /* Rounded corners */
-    padding: clamp(10px, 3vw, 20px); /* Responsive padding */
-    width: clamp(150px, 40vw, 200px); /* Responsive width */
-    height: clamp(150px, 40vw, 200px); /* Responsive height */
+    padding: 20px; /* Internal padding */
+    width: 200px; /* Fixed width */
+    height: 200px; /* Fixed height */
 }
 
 /* Hangman ASCII art */
 .hangman {
-    font-family: monospace; /* Fixed-width font */
-    color: #00ff00; /* Green text */
-    font-size: clamp(0.8rem, 2.5vw, 1rem); /* Responsive font */
-    line-height: 1; /* Tight spacing */
+    font-family: monospace; /* Fixed-width font for alignment */
+    color: #00ff00; /* Green text for visibility */
+    font-size: 1rem; /* Readable size */
+    line-height: 1; /* Tight line spacing */
 }
 
 /* Keyboard container */
 .keyboard {
-    display: flex; /* Flexbox layout */
-    flex-wrap: wrap; /* Wrap buttons */
-    justify-content: center; /* Center buttons */
-    gap: 10px; /* Spacing */
-    max-width: clamp(300px, 80vw, 400px); /* Responsive width */
+    display: flex; /* Flexbox for button layout */
+    flex-wrap: wrap; /* Wraps buttons to next line */
+    justify-content: center; /* Centers buttons */
+    gap: 10px; /* Spacing between buttons */
+    max-width: 400px; /* Limits width */
 }
 
 /* Keyboard buttons */
 .keyboard button {
-    width: clamp(35px, 8vw, 40px); /* Responsive size */
-    height: clamp(35px, 8vw, 40px); /* Responsive size */
-    font-size: clamp(0.8rem, 2.5vw, 1rem); /* Responsive font */
+    width: 40px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    font-size: 1rem; /* Readable text */
 }
 
-/* Word display */
+/* Word display styling */
 #word {
-    letter-spacing: 5px; /* Space letters */
-    font-size: clamp(1.2rem, 4vw, 1.5rem); /* Responsive font */
+    letter-spacing: 5px; /* Spaces out letters for clarity */
+    font-size: 1.5rem; /* Larger text */
 }
 
-/* Portal overlay */
+/* Portal overlay for transitions */
 .portal-overlay {
-    position: fixed; /* Cover viewport */
+    position: fixed; /* Fixed to cover viewport */
     top: 0; /* Top edge */
     left: 0; /* Left edge */
     width: 100vw; /* Full width */
     height: 100vh; /* Full height */
     background: rgba(0, 0, 0, 0.9); /* Dark overlay */
-    display: flex; /* Center content */
+    display: flex; /* Flexbox centering */
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
-    z-index: 1000; /* Above all */
+    z-index: 1000; /* Above all elements */
 }
 
-/* Portal circle */
+/* Portal circle animation */
 .portal-circle {
-    width: clamp(100px, 15vw, 150px); /* Responsive size */
-    height: clamp(100px, 15vw, 150px); /* Responsive size */
+    width: 15vw; /* Responsive width */
+    height: 15vw; /* Responsive height */
+    max-width: 200px; /* Maximum size */
+    max-height: 200px; /* Maximum size */
+    min-width: 150px; /* Minimum size */
+    min-height: 150px; /* Minimum size */
     background: radial-gradient(circle, #00ff00, #00cc00, #009900); /* Green gradient */
-    border-radius: 50%; /* Circular */
-    box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00; /* Green glow */
-    position: relative; /* For pseudo-element */
-    overflow: hidden; /* Hide overflow */
+    border-radius: 50%; /* Circular shape */
+    box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff00, 0 0 100px #00ff00; /* Green glow */
+    position: relative; /* For pseudo-element positioning */
+    overflow: hidden; /* Hides overflow */
 }
 
 /* Portal swirl effect */
 .portal-circle::before {
     content: ''; /* Empty content */
     position: absolute; /* Absolute positioning */
-    top: -50%; /* Offset */
-    left: -50%; /* Offset */
+    top: -50%; /* Offset upwards */
+    left: -50%; /* Offset left */
     width: 200%; /* Double size */
     height: 200%; /* Double size */
-    background: conic-gradient(#00ff00, #00cc00, #009900, #00cc00, #00ff00); /* Swirling gradient */
+    background: conic-gradient(#00ff00, #00cc00, #009900, #00cc00, #00ff00); /* Swirling green gradient */
     animation: swirl 2s linear infinite; /* Continuous rotation */
 }
 
-/* Portal box */
-.portal-box {
-    background: rgba(0, 0, 0, 0.9); /* Dark background */
-    border: 2px solid #ff00ff; /* Magenta border */
-    padding: clamp(10px, 2vw, 15px); /* Responsive padding */
-    box-shadow: 0 0 20px #ff00ff; /* Magenta glow */
-    border-radius: 10px; /* Rounded corners */
-    transition: all 0.3s ease; /* Smooth transition */
-    width: 100%; /* Full width */
-}
-
-/* Portal box hover effect */
-.portal-box:hover {
-    box-shadow: 0 0 30px #00ccff; /* Cyan glow */
-    transform: scale(1.05); /* Slight scale up */
-}
-
 /* Animation keyframes */
-@keyframes swirl { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes pulse { 0%, 100% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; } 50% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-@keyframes portalEntry { 0% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { transform: scale(3) rotate(720deg); opacity: 1; } 100% { transform: scale(20) rotate(1440deg); opacity: 0; } }
+@keyframes swirl {
+    0% { transform: rotate(0deg); } /* Start rotation */
+    100% { transform: rotate(360deg); } /* Full rotation */
+}
+
+@keyframes pulse {
+    0%, 100% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; } /* Cyan glow */
+    50% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff; } /* Magenta glow */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; } /* Fully transparent */
+    to { opacity: 1; } /* Fully opaque */
+}
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; } /* Slide up and fade in */
+    to { transform: translateY(0); opacity: 1; } /* Final position */
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); } /* Normal position */
+    50% { transform: translateY(-5px); } /* Bounce up */
+}
+
+@keyframes portalEntry {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; } /* Small and invisible */
+    50% { transform: scale(3) rotate(720deg); opacity: 1; } /* Large and visible */
+    100% { transform: scale(20) rotate(1440deg); opacity: 0; } /* Overscale and fade out */
+}
 
 /* Animation classes */
-.animate-pulse { animation: pulse 2s infinite; }
-.animate-fade-in { animation: fadeIn 1s ease-in; }
-.animate-slide-in { animation: slideIn 0.8s ease-out; }
-.animate-bounce { animation: bounce 1.5s infinite; }
-.animate-portal-entry { animation: portalEntry 2s ease forwards; }
+.animate-pulse { animation: pulse 2s infinite; } /* Pulsing glow effect */
+.animate-fade-in { animation: fadeIn 1s ease-in; } /* Fade in animation */
+.animate-slide-in { animation: slideIn 0.8s ease-out; } /* Slide in animation */
+.animate-bounce { animation: bounce 1.5s infinite; } /* Bouncing effect */
+.animate-portal-entry { animation: portalEntry 2s ease forwards; } /* Portal animation */
 
-/* Responsive adjustments */
-@media (max-width: 576px) {
-    .neon-text { font-size: clamp(1.2rem, 4vw, 1.8rem); }
-    .neon-subtext { font-size: clamp(0.7rem, 2.5vw, 0.9rem); }
-    .neon-btn { padding: 6px 12px; font-size: clamp(0.7rem, 2vw, 0.9rem); }
-    .hangman-stage { width: clamp(120px, 35vw, 150px); height: clamp(120px, 35vw, 150px); }
-    .periodic-table-grid { grid-template-columns: repeat(18, clamp(25px, 4vw, 30px)); min-width: clamp(450px, 85vw, 540px); }
-    .element { width: clamp(25px, 4vw, 30px); height: clamp(25px, 4vw, 30px); line-height: clamp(25px, 4vw, 30px); font-size: clamp(0.6rem, 1.5vw, 0.7rem); }
-    .keyboard button { width: clamp(30px, 7vw, 35px); height: clamp(30px, 7vw, 35px); font-size: clamp(0.7rem, 2vw, 0.9rem); }
-}
-
-@media (max-width: 768px) {
-    .sidebar { margin-top: 20px; }
+/* Responsive adjustments for smaller screens */
+@media (max-width: 991px) {
+    .sidebar {
+        position: static; /* Normal flow instead of fixed */
+        height: auto; /* Auto height */
+        border-left: none; /* Remove side border */
+        border-top: 2px solid #00ccff; /* Add top border */
+        box-shadow: 0 -5px 15px #00ccff; /* Shadow upwards */
+        width: 100%; /* Full width */
+        padding: 15px; /* Slightly less padding */
+        overflow-y: visible; /* Prevent sidebar clipping */
+    }
+    .periodic-table.scrollable {
+        max-height: 300px; /* Limit height on mobile */
+        flex: none; /* Prevent over-expansion */
+        overflow-x: auto; /* Maintain horizontal scrolling */
+        overflow-y: auto; /* Maintain vertical scrolling */
+    }
+    .periodic-table-grid {
+        grid-template-columns: repeat(18, 30px); /* Smaller columns */
+        min-width: 558px; /* 18 * 30px + gaps */
+    }
+    .neon-text { font-size: 1.5rem; } /* Smaller title text */
+    .neon-subtext { font-size: 0.9rem; } /* Smaller subtext */
+    .neon-btn { padding: 8px 15px; font-size: 0.8rem; } /* Smaller buttons */
+    .hangman-stage { width: 150px; height: 150px; } /* Smaller hangman stage */
+    .keyboard button { width: 35px; height: 35px; font-size: 0.9rem; } /* Smaller keyboard buttons */
+    .element { width: 30px; height: 30px; line-height: 30px; font-size: 0.7rem; } /* Smaller elements */
 }

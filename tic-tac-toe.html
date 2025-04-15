@@ -1,112 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- HTML5 document with English language -->
 
 <head>
     <!-- Page title -->
-    <title>Neon Tic-Tac-Toe</title>
-    <!-- Favicon -->
+    <title>Tic-Tac-Toe</title>
+    <!-- Favicon for browser tab -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <!-- UTF-8 encoding -->
+    <!-- Character encoding -->
     <meta charset="utf-8" />
-    <!-- Responsive viewport -->
+    <!-- Responsive viewport settings -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS for layout and responsiveness -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-    <!-- Orbitron font -->
+    <!-- Orbitron font for futuristic neon aesthetic -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
+    <!-- Custom CSS for Tic-Tac-Toe styling -->
     <link rel="stylesheet" href="tic-tac-toe.css">
 </head>
 
 <body>
-    <!-- Portal overlay -->
+    <!-- Portal overlay for page transitions -->
     <div id="portal-overlay" class="portal-overlay">
+        <!-- Animated portal circle for transition effect -->
         <div class="portal-circle animate-portal-entry"></div>
     </div>
-    <!-- Player selection overlay -->
+
+    <!-- Player selection overlay, visible initially -->
     <div id="player-selection" class="portal-overlay">
+        <!-- Selection box for game mode -->
         <div class="selection-box animate-fade-in">
+            <!-- Title for mode selection -->
             <h2 class="neon-text mb-4">Select Game Mode</h2>
+            <!-- Grid layout for buttons -->
             <div class="d-grid gap-3">
-                <button id="multiPlayer" class="btn neon-btn animate-bounce mb-2">Two Players</button>
-                <button id="singlePlayer" class="btn neon-btn animate-bounce mb-3">Single Player (vs AI)</button>
-                <div class="text-center mb-3">
-                    <label class="neon-subtext me-3"><input type="radio" name="difficulty" value="easy" checked>
-                        Easy</label>
-                    <label class="neon-subtext me-3"><input type="radio" name="difficulty" value="medium">
-                        Medium</label>
-                    <label class="neon-subtext me-3"><input type="radio" name="difficulty" value="hard"> Hard</label>
+                <!-- Multiplayer mode button -->
+                <div>
+                    <button id="multiPlayer" class="btn neon-btn animate-bounce mb-2">Dual Cyber Grid</button>
+                </div>
+                <!-- Single-player mode button with difficulty options -->
+                <div>
+                    <button id="singlePlayer" class="btn neon-btn animate-bounce mb-3">Solo vs AI</button>
+                    <!-- Difficulty selection centered below single-player button -->
+                    <div class="text-center mb-3">
+                        <label class="neon-subtext me-3">
+                            <input type="radio" name="difficulty" value="easy" checked> Low Security
+                        </label>
+                        <label class="neon-subtext me-3">
+                            <input type="radio" name="difficulty" value="medium"> Mid-Tier
+                        </label>
+                        <label class="neon-subtext me-3">
+                            <input type="radio" name="difficulty" value="hard"> Firewall
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Player 2 name input overlay -->
+
+    <!-- Player 2 name input overlay, hidden initially -->
     <div id="player2-name" class="portal-overlay" style="display: none;">
+        <!-- Selection box for Player 2 name input -->
         <div class="selection-box animate-fade-in">
-            <h2 class="neon-text mb-4">Enter Player 2 Name</h2>
-            <input type="text" id="player2NameInput" class="form-control mb-3" placeholder="Player 2 Name"
+            <!-- Prompt for Player 2's name -->
+            <h2 class="neon-text mb-4">Enter Player 2's Cyber Alias</h2>
+            <!-- Input field for Player 2 name -->
+            <input type="text" id="player2NameInput" class="form-control text-center mb-3" placeholder="Neon Striker"
                 maxlength="20">
-            <p id="player2NameError" class="neon-subtext mb-3" style="display: none;"></p>
-            <button id="confirmPlayer2Name" class="btn neon-btn animate-bounce">Confirm</button>
+            <!-- Error message for invalid input -->
+            <div id="player2NameError" class="neon-subtext mb-3" style="color: #ff0000; display: none;"></div>
+            <!-- Confirm button for name submission -->
+            <button id="confirmPlayer2Name" class="btn neon-btn animate-bounce">Lock In</button>
         </div>
     </div>
-    <!-- Main content -->
+
+    <!-- Main game content, hidden initially -->
     <div id="main-content" class="container-fluid p-0" style="display: none;">
-        <div class="row g-0">
-            <!-- Game area -->
-            <div class="col-12 col-md-8 col-lg-9 p-3">
-                <div class="game-area text-center">
-                    <h1 class="neon-text mb-4 animate-pulse">Neon Tic-Tac-Toe</h1>
+        <!-- Full-height row for layout -->
+        <div class="row g-0 min-vh-100">
+            <!-- Game area, centered horizontally and vertically -->
+            <div class="col-lg-9 d-flex align-items-center justify-content-center p-3">
+                <!-- Centered game content -->
+                <div class="text-center">
+                    <!-- Game title with neon effect -->
+                    <h1 class="neon-text mb-4 animate-pulse">Tic-Tac-Toe</h1>
+                    <!-- Score display in a centered row -->
                     <div class="row justify-content-center mb-4">
+                        <!-- Player 1 score -->
                         <div class="col-5 text-center animate-fade-in">
-                            <p id="player1Score" class="neon-text mb-3">Player 1: 0</p>
+                            <p id="player1Score" class="neon-text mb-3"></p>
                         </div>
+                        <!-- Player 2/AI score -->
                         <div class="col-5 text-center animate-fade-in">
-                            <p id="player2Score" class="neon-text mb-3">Player 2: 0</p>
+                            <p id="player2Score" class="neon-text mb-3"></p>
                         </div>
                     </div>
-                    <p id="turn" class="neon-subtext mb-3 animate-fade-in">Turn: Player 1</p>
-                    <div id="board" class="board mx-auto mb-4"></div>
-                    <div id="result" class="animate-slide-in">
-                        <span id="VictoryTxt" style="display: none;"></span>
-                        <span id="LossTxt" style="display: none;"></span>
+                    <!-- Game controls and board -->
+                    <div class="animate-fade-in">
+                        <!-- Current turn display -->
+                        <p id="turn" class="neon-subtext mb-3"></p>
+                        <!-- Tic-Tac-Toe board -->
+                        <div id="board" class="board mb-4 mx-auto"></div>
+                        <!-- Override mode toggle -->
+                        <div class="mb-3">
+                            <label class="neon-subtext">
+                                <input type="checkbox" id="overrideMode"> Override Mode
+                            </label>
+                        </div>
+                        <!-- Result message -->
+                        <div id="result" class="neon-text animate-slide-in">
+                            <span id="VictoryTxt" style="display: none;"></span>
+                            <span id="LossTxt" style="display: none;"></span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!-- Sidebar -->
-            <div class="col-12 col-md-4 col-lg-3 p-3">
-                <div class="sidebar">
-                    <h2 class="neon-text mb-4 animate-pulse">Neon Nexus</h2>
-                    <div id="neon-portal" class="portal-box mb-4">
-                        <p class="neon-subtext mb-2">Neon Portal</p>
-                        <div class="d-grid gap-2">
-                            <button onclick="portalTransition('index.html')"
-                                class="btn neon-btn portal-btn animate-bounce">The Matrix</button>
-                            <button onclick="portalTransition('rps.html')"
-                                class="btn neon-btn portal-btn animate-bounce">Pixel Duel</button>
-                            <button onclick="portalTransition('hangman.html')"
-                                class="btn neon-btn portal-btn animate-bounce">Codebreaker</button>
-                        </div>
+            <!-- Sidebar navigation, centered vertically -->
+            <div class="col-lg-3 sidebar p-3">
+                <!-- Sidebar title with neon effect -->
+                <h2 class="neon-text mb-4 animate-pulse">Neon Nexus</h2>
+                <!-- Portal box for navigation -->
+                <div id="neon-portal" class="portal-box">
+                    <!-- Portal label -->
+                    <p class="neon-subtext mb-2">Neon Portal</p>
+                    <!-- Navigation buttons -->
+                    <div class="d-grid gap-2">
+                        <button onclick="portalTransition('index.html')"
+                            class="btn neon-btn portal-btn animate-bounce">The Matrix</button>
+                        <button onclick="portalTransition('rps.html')"
+                            class="btn neon-btn portal-btn animate-bounce">Pixel Duel</button>
+                        <button onclick="portalTransition('hangman.html')"
+                            class="btn neon-btn portal-btn animate-bounce">Codebreaker</button>
                     </div>
-                    <div class="d-grid">
-                        <button onclick="resetGame()" class="btn neon-btn animate-bounce">Reset Game</button>
-                    </div>
+                </div>
+                <!-- Reset button container -->
+                <div class="d-grid mt-4">
+                    <button onclick="resetGame()" class="btn neon-btn animate-bounce">Reboot Grid</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Audio elements -->
-    <audio id="clickSound" src="click.wav" preload="auto"></audio>
-    <audio id="winSound" src="win.wav" preload="auto"></audio>
-    <audio id="loseSound" src="lose.wav" preload="auto"></audio>
-    <audio id="actionSound" src="action.wav" preload="auto"></audio>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-    <!-- Custom JavaScript -->
+
+    <!-- Audio elements for sound effects -->
+    <audio id="clickSound" src="sounds/click.wav" preload="auto"></audio>
+    <audio id="winSound" src="sounds/win.wav" preload="auto"></audio>
+    <audio id="loseSound" src="sounds/lose.wav" preload="auto"></audio>
+    <audio id="actionSound" src="sounds/action.wav" preload="auto"></audio>
+
+    <!-- JavaScript for game logic -->
     <script src="tic-tac-toe.js"></script>
 </body>
 
