@@ -1,25 +1,27 @@
-/* Base styles for the body */
+/* Ensure body takes full viewport with no margins */
 body {
     background: linear-gradient(135deg, #0d0015, #1a0033); /* Neon gradient background */
-    font-family: 'Orbitron', sans-serif; /* Futuristic font */
-    color: #fff; /* White text */
+    font-family: 'Orbitron', sans-serif; /* Cyberpunk font */
+    color: #fff; /* White text for contrast */
     min-height: 100vh; /* Full viewport height */
-    margin: 0; /* No margins */
-    padding: 0; /* No padding */
+    margin: 0; /* Remove default margins */
+    padding: 0; /* Remove default padding */
     overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
-/* Neon text effect */
+/* Neon text effect for headers and titles */
 .neon-text {
     text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff, 0 0 20px #00ccff, 0 0 40px #00ccff; /* Cyan glow */
     color: #00ccff; /* Cyan color */
-    font-weight: 700; /* Bold */
+    font-weight: 700; /* Bold text */
+    font-size: clamp(1.5rem, 5vw, 2.5rem); /* Responsive font size */
 }
 
-/* Neon subtext effect */
+/* Neon subtext for smaller text */
 .neon-subtext {
     text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff; /* Magenta glow */
     color: #ff00ff; /* Magenta color */
+    font-size: clamp(0.9rem, 3vw, 1.2rem); /* Responsive font size */
 }
 
 /* Neon button styling */
@@ -27,10 +29,12 @@ body {
     background: #00ccff; /* Cyan background */
     border: none; /* No border */
     color: #000; /* Black text */
-    padding: 10px 20px; /* Padding */
+    padding: clamp(8px, 2vw, 12px); /* Responsive padding */
     text-transform: uppercase; /* Uppercase text */
     box-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff; /* Cyan glow */
-    transition: all 0.4s ease; /* Smooth transition */
+    transition: all 0.4s ease; /* Smooth hover transition */
+    font-size: clamp(0.8rem, 2.5vw, 1rem); /* Responsive font size */
+    width: 100%; /* Fill container width */
 }
 
 /* Button hover effect */
@@ -38,91 +42,98 @@ body {
     background: #ff00ff; /* Magenta background */
     color: #fff; /* White text */
     box-shadow: 0 0 15px #ff00ff, 0 0 30px #ff00ff; /* Magenta glow */
-    transform: translateY(-3px); /* Slight lift */
+    transform: translateY(-3px); /* Slight lift effect */
 }
 
-/* Sidebar styling, centered */
+/* Disabled button styling */
+.neon-btn:disabled {
+    background: rgba(0, 0, 0, 0.9); /* Dark background */
+    box-shadow: 0 0 5px #ff0000; /* Red glow */
+    cursor: not-allowed; /* Disabled cursor */
+    opacity: 0.6; /* Faded appearance */
+}
+
+/* Main content area styling */
+.main-content {
+    min-height: 100vh; /* Full viewport height */
+    display: flex; /* Flex for centering content */
+    flex-direction: column; /* Vertical alignment */
+    justify-content: center; /* Center vertically */
+}
+
+/* Welcome area for title and input */
+.welcome-area {
+    padding: clamp(20px, 5vw, 40px); /* Responsive padding */
+}
+
+/* Sidebar styling */
 .sidebar {
     background: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
-    border-left: 2px solid #00ccff; /* Cyan border */
-    height: 100vh; /* Full height */
-    position: fixed; /* Fixed position */
-    right: 0; /* Right-aligned */
-    top: 0; /* Top-aligned */
-    box-shadow: -5px 0 15px #00ccff; /* Cyan shadow */
-    display: flex; /* Flexbox for centering */
-    flex-direction: column; /* Vertical stacking */
-    justify-content: center; /* Center vertically */
-    align-items: center; /* Center horizontally */
-    padding: 20px; /* Padding */
-    width: 25%; /* Fixed width */
+    border-left: 2px solid #00ccff; /* Cyan border on left */
+    border-radius: 0; /* No rounded corners for full-height look */
+    padding: clamp(15px, 3vw, 20px); /* Responsive padding */
+    box-shadow: -5px 0 15px #00ccff; /* Cyan shadow to left */
+    width: 100%; /* Fill container width */
 }
 
-/* Sidebar title */
-.sidebar h2.neon-text {
-    margin-bottom: 20px; /* Space below */
-    text-align: center; /* Centered text */
+/* Sidebar container to ensure full height */
+.sidebar-container {
+    min-height: 100vh; /* Full viewport height on medium+ screens */
+    position: sticky; /* Stick to viewport on scroll */
+    top: 0; /* Align to top */
 }
 
 /* Portal overlay for transitions */
 .portal-overlay {
-    position: fixed; /* Fixed position */
-    top: 0; /* Top-aligned */
-    left: 0; /* Left-aligned */
+    position: fixed; /* Cover entire viewport */
+    top: 0; /* Top edge */
+    left: 0; /* Left edge */
     width: 100vw; /* Full width */
     height: 100vh; /* Full height */
     background: rgba(0, 0, 0, 0.9); /* Dark overlay */
-    display: flex; /* Flexbox centering */
+    display: flex; /* Center content */
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
-    z-index: 1000; /* Above all */
+    z-index: 1000; /* Above all elements */
 }
 
 /* Portal circle animation */
 .portal-circle {
-    width: 15vw; /* Responsive width */
-    height: 15vw; /* Responsive height */
-    max-width: 200px; /* Max size */
-    max-height: 200px; /* Max size */
-    min-width: 150px; /* Min size */
-    min-height: 150px; /* Min size */
+    width: clamp(100px, 15vw, 150px); /* Responsive size */
+    height: clamp(100px, 15vw, 150px); /* Responsive size */
     background: radial-gradient(circle, #00ff00, #00cc00, #009900); /* Green gradient */
-    border-radius: 50%; /* Circular */
-    box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff00, 0 0 100px #00ff00; /* Green glow */
-    position: relative; /* For pseudo-element */
+    border-radius: 50%; /* Circular shape */
+    box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00; /* Green glow */
+    position: relative; /* For pseudo-element positioning */
     overflow: hidden; /* Hide overflow */
 }
 
 /* Portal swirl effect */
 .portal-circle::before {
     content: ''; /* Empty content */
-    position: absolute; /* Absolute positioning */
-    top: -50%; /* Offset */
-    left: -50%; /* Offset */
-    width: 200%; /* Double size */
-    height: 200%; /* Double size */
+    position: absolute; /* Position within circle */
+    top: -50%; /* Offset for swirl */
+    left: -50%; /* Offset for swirl */
+    width: 200%; /* Double size for effect */
+    height: 200%; /* Double size for effect */
     background: conic-gradient(#00ff00, #00cc00, #009900, #00cc00, #00ff00); /* Swirling gradient */
     animation: swirl 2s linear infinite; /* Continuous rotation */
 }
 
-/* Portal box for navigation */
+/* Portal box for navigation buttons */
 .portal-box {
     background: rgba(0, 0, 0, 0.9); /* Dark background */
     border: 2px solid #ff00ff; /* Magenta border */
-    padding: 15px; /* Padding */
+    padding: clamp(10px, 2vw, 15px); /* Responsive padding */
     box-shadow: 0 0 20px #ff00ff; /* Magenta glow */
     border-radius: 10px; /* Rounded corners */
-    transition: all 0.3s ease; /* Smooth transition */
-    width: 100%; /* Full width */
-    display: flex; /* Flexbox centering */
-    flex-direction: column; /* Vertical stacking */
-    align-items: center; /* Center horizontally */
-    text-align: center; /* Center text */
+    transition: all 0.3s ease; /* Smooth hover transition */
+    width: 100%; /* Fill container width */
 }
 
 /* Portal box hover effect */
 .portal-box:hover {
-    box-shadow: 0 0 30px #00ccff, 0 0 50px #00ccff; /* Cyan glow */
+    box-shadow: 0 0 30px #00ccff; /* Cyan glow */
     transform: scale(1.05); /* Slight scale up */
 }
 
@@ -132,10 +143,11 @@ body {
     border: 2px solid #00ccff; /* Cyan border */
     color: #fff; /* White text */
     box-shadow: 0 0 10px #00ccff; /* Cyan glow */
-    transition: all 0.3s ease; /* Smooth transition */
+    transition: all 0.3s ease; /* Smooth focus transition */
+    font-size: clamp(0.9rem, 2.5vw, 1rem); /* Responsive font size */
 }
 
-/* Input focus styling */
+/* Input field focus styling */
 .form-control:focus {
     background: rgba(0, 0, 0, 0.9); /* Darker background */
     border-color: #ff00ff; /* Magenta border */
@@ -143,30 +155,63 @@ body {
     color: #fff; /* White text */
 }
 
-/* Responsive adjustments */
-@media (max-width: 991px) {
-    .sidebar {
-        position: static; /* Normal flow */
-        height: auto; /* Auto height */
-        border-left: none; /* Remove border */
-        border-top: 2px solid #00ccff; /* Top border */
-        box-shadow: 0 -5px 15px #00ccff; /* Shadow upwards */
-        width: 100%; /* Full width */
-    }
-    .neon-text { font-size: 1.5rem; } /* Smaller title */
-    .neon-subtext { font-size: 0.9rem; } /* Smaller subtext */
-    .neon-btn { padding: 8px 15px; font-size: 0.8rem; } /* Smaller buttons */
+/* Animation keyframes for swirl effect */
+@keyframes swirl {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-/* Animation keyframes */
-@keyframes swirl { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes pulse { 0%, 100% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; } 50% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff; } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-@keyframes portalEntry { 0% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { transform: scale(3) rotate(720deg); opacity: 1; } 100% { transform: scale(20) rotate(1440deg); opacity: 0; } }
+/* Animation keyframes for pulsating neon effect */
+@keyframes pulse {
+    0%, 100% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; }
+    50% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; }
+}
 
-/* Animation classes */
+/* Animation keyframes for fade-in effect */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Animation keyframes for bouncing button effect */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Animation keyframes for portal entry */
+@keyframes portalEntry {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    50% { transform: scale(3) rotate(720deg); opacity: 1; }
+    100% { transform: scale(20) rotate(1440deg); opacity: 0; }
+}
+
+/* Apply animation classes */
 .animate-pulse { animation: pulse 2s infinite; }
 .animate-fade-in { animation: fadeIn 1s ease-in; }
 .animate-bounce { animation: bounce 1.5s infinite; }
 .animate-portal-entry { animation: portalEntry 2s ease forwards; }
+
+/* Responsive adjustments for small screens */
+@media (max-width: 576px) {
+    .neon-text { font-size: clamp(1.2rem, 4vw, 1.8rem); } /* Smaller title font */
+    .neon-subtext { font-size: clamp(0.7rem, 2.5vw, 0.9rem); } /* Smaller subtext */
+    .neon-btn { padding: 6px 12px; font-size: clamp(0.7rem, 2vw, 0.9rem); } /* Smaller buttons */
+    .welcome-area { padding: clamp(10px, 3vw, 20px); } /* Reduced padding */
+}
+
+/* Responsive adjustments for medium screens */
+@media (max-width: 768px) {
+    .sidebar-container {
+        min-height: calc(100vh - 100px); /* Extend to bottom, accounting for main content */
+        position: static; /* Stack below main content */
+    }
+    .sidebar {
+        border-left: none; /* Remove left border */
+        border: 2px solid #00ccff; /* Full cyan border */
+        border-radius: 10px; /* Rounded corners */
+        min-height: calc(100vh - 100px); /* Ensure sidebar reaches bottom */
+    }
+    .main-content { min-height: auto; } /* Auto height for stacking */
+    .portal-box { margin-bottom: 0; } /* Remove extra margin */
+}
