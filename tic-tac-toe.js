@@ -1,63 +1,59 @@
 // Game state variables
-let board = Array(9).fill(null); // 3x3 board as a 1D array
-let player1Score = 0; // Player 1 (X) score
-let player2Score = 0; // Player 2 or AI (O) score
-let currentPlayer = "X"; // Current player, X starts
-let gameActive = false; // Indicates if game is active
-let isMultiplayer = false; // Tracks multiplayer mode
-let difficulty = "easy"; // AI difficulty (easy, medium, hard)
-let overrideMode = false; // Tracks override mode state
-const player1Name = localStorage.getItem("player1Name") || "Cyber Warrior"; // Player 1 name
+let board = ['', '', '', '', '', '', '', '', '']; // Game board
+let currentPlayer = 'X'; // Current player
+let gameActive = false; // Game active status
+let player1Score = 0; // Player 1 score
+let player2Score = 0; // Player 2/AI score
+let isMultiplayer = false; // Multiplayer mode flag
+let difficulty = "easy"; // AI difficulty
+const player1Name = localStorage.getItem("userName") || "Cyber Warrior"; // Player 1 name
 let player2Name = localStorage.getItem("player2Name") || "Neon Striker"; // Player 2 name
-const winningCombos = [ // Winning combinations
+let colorCycleInterval = null; // Color cycle interval
+const winningCombinations = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
     [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
     [0, 4, 8], [2, 4, 6] // Diagonals
 ];
 
-// Initialize page on DOM load
+// Initialize page
 function initPage() {
     const portalOverlay = document.getElementById("portal-overlay");
     const playerSelection = document.getElementById("player-selection");
-    // Show player selection after portal animation
+    const mainContent = document.getElementById("main-content");
+    const player2NameOverlay = document.getElementById("player2-name");
+
+    portalOverlay.style.display = "flex";
+    playerSelection.style.display = "none";
+    mainContent.style.display = "none";
+    player2NameOverlay.style.display = "none";
+    document.body.style.overflow = "hidden";
+
     setTimeout(() => {
-        portalOverlay.style.display = "none"; // Hide portal
-        playerSelection.style.display = "flex"; // Show mode selection
-        document.body.style.overflow = "auto"; // Enable scrolling
+        portalOverlay.style.display = "none";
+        playerSelection.style.display = "flex";
+        document.body.style.overflow = "auto";
     }, 2000);
 
-    // Event listeners for mode selection
-    document.getElementById("singlePlayer").addEventListener("click", () => {
-        isMultiplayer = false;
-        startGame();
-    });
+    document.getElementById("singlePlayer").addEventListener("click", () => startGame(false));
     document.getElementById("multiPlayer").addEventListener("click", promptPlayer2Name);
     document.getElementById("confirmPlayer2Name").addEventListener("click", confirmPlayer2Name);
-    // Event listener for override mode toggle
-    document.getElementById("overrideMode").addEventListener("change", () => {
-        overrideMode = document.getElementById("overrideMode").checked;
-        playSound("clickSound");
-        updateBoard(); // Update board visuals to reflect override mode
-    });
 }
 
-// Prompt for Player 2 name in multiplayer mode
+// Prompt for Player 2 name
 function promptPlayer2Name() {
     const playerSelection = document.getElementById("player-selection");
     const player2NameOverlay = document.getElementById("player2-name");
-    playSound("clickSound");
-    playerSelection.style.display = "none"; // Hide mode selection
-    player2NameOverlay.style.display = "flex"; // Show name input
+    playerSelection.style.display = "none";
+    player2NameOverlay.style.display = "flex";
 }
 
-// Confirm Player 2 name and start multiplayer
+// Confirm Player 2 name
 function confirmPlayer2Name() {
     const player2NameInput = document.getElementById("player2NameInput");
     const player2NameError = document.getElementById("player2NameError");
     let name = player2NameInput.value.trim();
     const nameRegex = /^[a-zA-Z0-9\s]+$/;
 
-    // Validate name
     if (name.length === 0 || name.length > 20 || !nameRegex.test(name)) {
         name = "Neon Striker";
         player2NameInput.value = name;
@@ -71,190 +67,162 @@ function confirmPlayer2Name() {
     player2Name = name;
     localStorage.setItem("player2Name", player2Name);
     document.getElementById("player2-name").style.display = "none";
-    isMultiplayer = true;
-    playSound("clickSound");
-    startGame();
+    startGame(true);
 }
 
-// Start a new game
-function startGame() {
+// Start new game
+function startGame(multiplayer) {
+    isMultiplayer = multiplayer;
     gameActive = true;
-    board = Array(9).fill(null);
-    currentPlayer = "X";
-    overrideMode = false; // Reset override mode
-    document.getElementById("overrideMode").checked = false; // Reset checkbox
-    if (!isMultiplayer) {
-        difficulty = document.querySelector('input[name="difficulty"]:checked').value || "easy";
-    }
-    document.getElementById("player-selection").style.display = "none";
-    document.getElementById("main-content").style.display = "block";
+    board = ['', '', '', '', '', '', '', '', ''];
+    currentPlayer = 'X';
     document.getElementById("VictoryTxt").style.display = "none";
     document.getElementById("LossTxt").style.display = "none";
+    stopColorCycle();
+    if (!isMultiplayer) {
+        difficulty = document.querySelector('input[name="difficulty"]:checked')?.value || "easy";
+    }
+
+    document.getElementById("player-selection").style.display = "none";
+    document.getElementById("main-content").style.display = "block";
     updateDisplay();
-    createBoard();
-    cycleColors("result");
+    setupBoard();
 }
 
-// Update game display
+// Update display
 function updateDisplay() {
-    document.getElementById("player1Score").textContent = `${player1Name} (X): ${player1Score}`;
-    document.getElementById("player2Score").textContent = `${isMultiplayer ? player2Name : "AI"} (O): ${player2Score}`;
-    document.getElementById("turn").textContent = `Turn: ${currentPlayer === "X" ? player1Name + " (X)" : (isMultiplayer ? player2Name + " (O)" : "AI (O)")}`;
-}
-
-// Create game board
-function createBoard() {
-    const boardElement = document.getElementById("board");
-    boardElement.innerHTML = "";
-    for (let i = 0; i < 9; i++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.setAttribute("data-index", i);
-        cell.addEventListener("click", () => handleCellClick(i));
-        boardElement.appendChild(cell);
-    }
-    updateBoard();
-}
-
-// Handle cell click
-function handleCellClick(index) {
-    if (!gameActive) return;
-    if (!overrideMode && board[index] !== null) return; // Prevent overwriting unless override mode is on
-    if (!isMultiplayer && currentPlayer === "O") return; // Prevent player clicking during AI turn
-    playSound("actionSound");
-    board[index] = currentPlayer;
-    updateBoard();
-    const winner = checkWinner();
-    if (winner) {
-        endGame(winner);
-    } else {
-        currentPlayer = currentPlayer === "X" ? "O" : "X";
-        updateDisplay();
-        if (!isMultiplayer && currentPlayer === "O") {
-            setTimeout(aiMove, 500);
-        }
-    }
-}
-
-// Update board visuals
-function updateBoard() {
-    const cells = document.querySelectorAll(".cell");
-    cells.forEach((cell, index) => {
-        cell.textContent = board[index] || "";
-        cell.classList.toggle("x", board[index] === "X");
-        cell.classList.toggle("o", board[index] === "O");
-        cell.classList.toggle("disabled", board[index] !== null && !overrideMode); // Disable only if override mode is off
+    document.getElementById("player1Score").textContent = `${player1Name}: ${player1Score}`;
+    document.getElementById("player2Score").textContent = `${isMultiplayer ? player2Name : "AI"}: ${player2Score}`;
+    document.getElementById("turn").textContent = `Turn: ${currentPlayer === 'X' ? player1Name : (isMultiplayer ? player2Name : "AI")}`;
+    document.querySelectorAll(".cell").forEach((cell, index) => {
+        cell.textContent = board[index];
+        cell.className = `cell ${board[index].toLowerCase()}`;
+        cell.classList.toggle("disabled", !!board[index] || !gameActive);
     });
 }
 
-// Check for winner
-function checkWinner() {
-    for (const combo of winningCombos) {
-        const [a, b, c] = combo;
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            return board[a];
+// Setup game board
+function setupBoard() {
+    const boardElement = document.getElementById("board");
+    boardElement.innerHTML = '';
+    for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.onclick = () => handleMove(i);
+        boardElement.appendChild(cell);
+    }
+    updateDisplay();
+}
+
+// Handle player move
+function handleMove(index) {
+    if (!gameActive || board[index]) return;
+    playSound("actionSound");
+    board[index] = currentPlayer;
+    if (checkWin()) {
+        endGame(currentPlayer);
+    } else if (board.every(cell => cell)) {
+        endGame(null);
+    } else {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        updateDisplay();
+        if (!isMultiplayer && currentPlayer === 'O') {
+            setTimeout(aiMove, 500);
         }
     }
-    return null;
 }
 
 // AI move logic
 function aiMove() {
     if (!gameActive) return;
     let move;
-    if (overrideMode) {
-        // In override mode, AI can choose any cell
-        if (difficulty === "easy") {
-            move = Math.floor(Math.random() * 9); // Random cell
-        } else if (difficulty === "medium") {
-            move = getWinningMove("O") || getWinningMove("X") || Math.floor(Math.random() * 9);
-        } else {
-            move = minimax(board, "O").index;
-        }
+    if (difficulty === "easy") {
+        move = getRandomMove();
+    } else if (difficulty === "medium") {
+        move = Math.random() > 0.5 ? getBestMove() : getRandomMove();
     } else {
-        // Normal mode, choose empty cells
-        if (difficulty === "easy") {
-            move = getRandomMove();
-        } else if (difficulty === "medium") {
-            move = getWinningMove("O") || getWinningMove("X") || getRandomMove();
-        } else {
-            move = minimax(board, "O").index;
-        }
+        move = getBestMove();
     }
-    if (move !== undefined) {
-        board[move] = "O";
-        updateBoard();
-        const winner = checkWinner();
-        if (winner) {
-            endGame(winner);
+    if (move !== null) {
+        board[move] = 'O';
+        if (checkWin()) {
+            endGame('O');
+        } else if (board.every(cell => cell)) {
+            endGame(null);
         } else {
-            currentPlayer = "X";
+            currentPlayer = 'X';
             updateDisplay();
         }
     }
 }
 
-// Get random move (for normal mode)
+// Get random move
 function getRandomMove() {
-    const available = board.map((val, idx) => val === null ? idx : null).filter(val => val !== null);
-    return available[Math.floor(Math.random() * available.length)];
+    const emptyCells = board.map((cell, index) => cell === '' ? index : null).filter(i => i !== null);
+    return emptyCells.length ? emptyCells[Math.floor(Math.random() * emptyCells.length)] : null;
 }
 
-// Check for winning/blocking move
-function getWinningMove(player) {
-    for (const combo of winningCombos) {
-        const [a, b, c] = combo;
-        if (board[a] === player && board[b] === player && (overrideMode || !board[c])) return c;
-        if (board[a] === player && (overrideMode || !board[b]) && board[c] === player) return b;
-        if ((overrideMode || !board[a]) && board[b] === player && board[c] === player) return a;
-    }
-    return null;
-}
-
-// Minimax algorithm (adapted for override mode)
-function minimax(newBoard, player) {
-    const available = overrideMode 
-        ? Array.from({length: 9}, (_, i) => i) // All cells available
-        : newBoard.map((val, idx) => val === null ? idx : null).filter(val => val !== null);
-    const winner = checkWinner();
-    if (winner === "O") return { score: 10 };
-    if (winner === "X") return { score: -10 };
-    if (available.length === 0) return { score: 0 }; // Shouldn't occur as game continues
-
-    const moves = [];
-    for (const index of available) {
-        const move = {};
-        move.index = index;
-        const original = newBoard[index];
-        newBoard[index] = player;
-        if (player === "O") {
-            move.score = minimax(newBoard, "X").score;
-        } else {
-            move.score = minimax(newBoard, "O").score;
-        }
-        newBoard[index] = original; // Undo move
-        moves.push(move);
-    }
-
-    let bestMove;
-    if (player === "O") {
-        let bestScore = -Infinity;
-        for (const move of moves) {
-            if (move.score > bestScore) {
-                bestScore = move.score;
-                bestMove = move;
+// Get best move using minimax
+function getBestMove() {
+    let bestScore = -Infinity;
+    let move = null;
+    for (let i = 0; i < 9; i++) {
+        if (!board[i]) {
+            board[i] = 'O';
+            let score = minimax(board, 0, false);
+            board[i] = '';
+            if (score > bestScore) {
+                bestScore = score;
+                move = i;
             }
         }
+    }
+    return move;
+}
+
+// Minimax algorithm
+function minimax(board, depth, isMaximizing) {
+    const result = checkWin();
+    if (result) {
+        return result === 'O' ? 10 - depth : -10 + depth;
+    }
+    if (board.every(cell => cell)) {
+        return 0;
+    }
+
+    if (isMaximizing) {
+        let bestScore = -Infinity;
+        for (let i = 0; i < 9; i++) {
+            if (!board[i]) {
+                board[i] = 'O';
+                let score = minimax(board, depth + 1, false);
+                board[i] = '';
+                bestScore = Math.max(score, bestScore);
+            }
+        }
+        return bestScore;
     } else {
         let bestScore = Infinity;
-        for (const move of moves) {
-            if (move.score < bestScore) {
-                bestScore = move.score;
-                bestMove = move;
+        for (let i = 0; i < 9; i++) {
+            if (!board[i]) {
+                board[i] = 'X';
+                let score = minimax(board, depth + 1, true);
+                board[i] = '';
+                bestScore = Math.min(score, bestScore);
             }
         }
+        return bestScore;
     }
-    return bestMove;
+}
+
+// Check for win
+function checkWin() {
+    for (let combo of winningCombinations) {
+        if (board[combo[0]] && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]) {
+            return board[combo[0]];
+        }
+    }
+    return null;
 }
 
 // End game
@@ -262,19 +230,31 @@ function endGame(winner) {
     gameActive = false;
     const victoryElement = document.getElementById("VictoryTxt");
     const lossElement = document.getElementById("LossTxt");
-    if (winner === "X") {
-        player1Score++;
-        victoryElement.textContent = `${player1Name} (X) Secures the Grid!`;
-        victoryElement.style.display = "inline";
-        lossElement.style.display = "none";
-        playSound("winSound");
+    victoryElement.style.display = "none";
+    lossElement.style.display = "none";
+    stopColorCycle();
+
+    let result;
+    if (winner) {
+        if (winner === 'X') {
+            player1Score++;
+            result = `${player1Name} Wins!`;
+            victoryElement.textContent = result;
+            victoryElement.style.display = "inline";
+            playSound("winSound");
+        } else {
+            player2Score++;
+            result = `${isMultiplayer ? player2Name : "AI"} Wins!`;
+            lossElement.textContent = result;
+            lossElement.style.display = "inline";
+            playSound("loseSound");
+        }
     } else {
-        player2Score++;
-        lossElement.textContent = `${isMultiplayer ? player2Name : "AI"} (O) Secures the Grid!`;
-        lossElement.style.display = "inline";
-        victoryElement.style.display = "none";
+        result = "Grid Locked!";
+        cycleColors("result");
         playSound("loseSound");
     }
+
     updateDisplay();
 }
 
@@ -286,16 +266,13 @@ function resetGame() {
     const mainContent = document.getElementById("main-content");
     mainContent.style.display = "none";
     portalOverlay.style.display = "flex";
+    document.getElementById("VictoryTxt").style.display = "none";
+    document.getElementById("LossTxt").style.display = "none";
+    stopColorCycle();
     setTimeout(() => {
-        gameActive = false;
-        board = Array(9).fill(null);
-        currentPlayer = "X";
-        overrideMode = false;
-        document.getElementById("overrideMode").checked = false;
-        document.getElementById("VictoryTxt").textContent = "";
-        document.getElementById("LossTxt").textContent = "";
-        playerSelection.style.display = "flex";
         portalOverlay.style.display = "none";
+        playerSelection.style.display = "flex";
+        gameActive = false;
     }, 2000);
 }
 
@@ -308,27 +285,39 @@ function playSound(soundId) {
     }
 }
 
-// Cycle colors for result text
+// Cycle colors for result
 function cycleColors(elementId) {
     const element = document.getElementById(elementId);
     const colors = ["#00ccff", "#ff00ff", "#00ff00", "#ffff00", "#ff6600"];
     let index = 0;
-    setInterval(() => {
+    stopColorCycle();
+    colorCycleInterval = setInterval(() => {
         element.style.color = colors[index];
         element.style.textShadow = `0 0 5px ${colors[index]}, 0 0 10px ${colors[index]}, 0 0 20px ${colors[index]}`;
         index = (index + 1) % colors.length;
     }, 700);
 }
 
+// Stop color cycling
+function stopColorCycle() {
+    if (colorCycleInterval) {
+        clearInterval(colorCycleInterval);
+        colorCycleInterval = null;
+        const resultElement = document.getElementById("result");
+        resultElement.style.color = "#00ccff";
+        resultElement.style.textShadow = "0 0 5px #00ccff, 0 0 10px #00ccff, 0 0 20px #00ccff";
+    }
+}
+
 // Portal transition
 function portalTransition(url) {
-    playSound("clickSound");
     const portalOverlay = document.getElementById("portal-overlay");
     const mainContent = document.getElementById("main-content");
+    playSound("clickSound");
     mainContent.style.display = "none";
     portalOverlay.style.display = "flex";
     setTimeout(() => window.location.href = url, 2000);
 }
 
-// Initialize on DOM load
+// Initialize page
 document.addEventListener("DOMContentLoaded", initPage);

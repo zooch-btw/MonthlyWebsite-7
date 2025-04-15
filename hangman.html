@@ -1,101 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Declares HTML5 document type and sets language to English for accessibility -->
+<!-- HTML5 document with English language -->
 
 <head>
-  <!-- Sets page title displayed in browser tab -->
+  <!-- Page title -->
   <title>Hangman - Periodic Elements</title>
-  <!-- Links favicon for browser icon (assumes favicon.ico exists in root) -->
+  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <!-- Specifies UTF-8 encoding for universal character support -->
+  <!-- UTF-8 encoding -->
   <meta charset="utf-8" />
-  <!-- Configures viewport for responsive design across devices -->
+  <!-- Responsive viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <!-- Imports Orbitron font for sci-fi, neon-cyberpunk aesthetic -->
+  <!-- Orbitron font -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <!-- Links Bootstrap CSS for grid layout and responsive utilities -->
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-  <!-- Links custom CSS for neon styling and periodic table -->
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="hangman.css">
 </head>
 
 <body>
-  <!-- Portal overlay for transition animations during load/reset/navigation -->
+  <!-- Portal overlay -->
   <div id="portal-overlay" class="portal-overlay">
-    <!-- Animated circle for portal effect -->
     <div class="portal-circle animate-portal-entry"></div>
   </div>
-
-  <!-- Main game container, initially hidden until portal animation completes -->
+  <!-- Main content -->
   <div id="main-content" class="container-fluid p-0" style="display: none;">
-    <!-- Bootstrap row for full-height layout -->
-    <div class="row g-0 min-vh-100">
-      <!-- Game area column (9/12 width on large screens) -->
-      <div class="col-lg-9 d-flex align-items-center justify-content-center p-3">
-        <!-- Centered game content -->
+    <div class="row g-0">
+      <!-- Game area -->
+      <div class="col-12 col-md-8 col-lg-9 p-3">
         <div class="game-area text-center">
-          <!-- Game title with neon glow and pulse animation -->
           <h1 class="neon-text mb-4 animate-pulse">Hangman - Periodic Elements</h1>
-          <!-- Score display with magenta subtext -->
           <p id="score" class="neon-subtext mb-3">Score: 0</p>
-          <!-- Hangman stage container for ASCII art -->
           <div id="hangman-stage" class="hangman-stage mb-4 mx-auto">
-            <!-- Preformatted text for hangman figure -->
             <pre id="hangman" class="hangman"></pre>
           </div>
-          <!-- Word display for guessed/unguessed letters -->
           <p id="word" class="neon-text mb-3"></p>
-          <!-- Keyboard for letter input -->
           <div id="keyboard" class="keyboard mb-4 mx-auto"></div>
-          <!-- Result message (win/loss/hint) -->
-          <p id="result" class="neon-text animate-slide-in"></p>
-          <!-- Hint button to reveal a letter -->
+          <div id="result" class="animate-slide-in">
+            <span id="VictoryTxt" style="display: none;"></span>
+            <span id="LossTxt" style="display: none;"></span>
+          </div>
           <button id="hint" class="btn neon-btn animate-bounce mt-3">Get Hint</button>
         </div>
       </div>
-      <!-- Sidebar column (3/12 width on large screens) -->
-      <div class="col-lg-3 sidebar p-3">
-        <!-- Sidebar title with neon glow -->
-        <h2 class="neon-text mb-4 animate-pulse">Neon Nexus</h2>
-        <!-- Scrollable periodic table container -->
-        <div id="periodic-table" class="periodic-table scrollable mb-4"></div>
-        <!-- Navigation portal box -->
-        <div id="neon-portal" class="portal-box mb-4">
-          <!-- Portal subtitle -->
-          <p class="neon-subtext mb-2">Neon Portal</p>
-          <!-- Grid for navigation buttons -->
-          <div class="d-grid gap-2">
-            <!-- Button to navigate to home page -->
-            <button onclick="portalTransition('index.html')"
-              class="btn neon-btn portal-btn animate-bounce">The Matrix</button>
-            <!-- Button to navigate to Tic-Tac-Toe -->
-            <button onclick="portalTransition('tic-tac-toe.html')"
-              class="btn neon-btn portal-btn animate-bounce">Neon Grid</button>
-            <!-- Button to navigate to Rock Paper Scissors -->
-            <button onclick="portalTransition('rps.html')" class="btn neon-btn portal-btn animate-bounce">Pixel Duel</button>
+      <!-- Sidebar -->
+      <div class="col-12 col-md-4 col-lg-3 p-3">
+        <div class="sidebar">
+          <h2 class="neon-text mb-4 animate-pulse">Neon Nexus</h2>
+          <div id="periodic-table" class="periodic-table scrollable mb-4"></div>
+          <div id="neon-portal" class="portal-box mb-4">
+            <p class="neon-subtext mb-2">Neon Portal</p>
+            <div class="d-grid gap-2">
+              <button onclick="portalTransition('index.html')" class="btn neon-btn portal-btn animate-bounce">The
+                Matrix</button>
+              <button onclick="portalTransition('tic-tac-toe.html')" class="btn neon-btn portal-btn animate-bounce">Neon
+                Grid</button>
+              <button onclick="portalTransition('rps.html')" class="btn neon-btn portal-btn animate-bounce">Pixel
+                Duel</button>
+            </div>
           </div>
-        </div>
-        <!-- Reset button container -->
-        <div class="d-grid">
-          <!-- Button to reset game state -->
-          <button onclick="resetGame()" class="btn neon-btn animate-bounce">Reset Game</button>
+          <div class="d-grid">
+            <button onclick="resetGame()" class="btn neon-btn animate-bounce">Reset Game</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Audio elements for sound effects -->
+  <!-- Audio elements -->
   <audio id="clickSound" src="click.wav" preload="auto"></audio>
   <audio id="winSound" src="win.wav" preload="auto"></audio>
   <audio id="loseSound" src="lose.wav" preload="auto"></audio>
   <audio id="actionSound" src="action.wav" preload="auto"></audio>
-
-  <!-- Bootstrap JS for button interactions and grid functionality -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
-  <!-- Custom JavaScript for game logic -->
+  <!-- Custom JavaScript -->
   <script src="hangman.js"></script>
 </body>
 
