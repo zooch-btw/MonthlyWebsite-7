@@ -127,6 +127,9 @@ function handleCellClick(index) {
     const winner = checkWinner();
     if (winner) {
         endGame(winner);
+    } else if (isMultiplayer && board.every(cell => cell !== null)) {
+        // Check for tie in multiplayer mode
+        endGame(null); // Null indicates a tie
     } else {
         currentPlayer = currentPlayer === "X" ? "O" : "X";
         updateDisplay();
@@ -213,8 +216,8 @@ function getWinningMove(player) {
 
 // Minimax algorithm (adapted for override mode)
 function minimax(newBoard, player) {
-    const available = overrideMode 
-        ? Array.from({length: 9}, (_, i) => i) // All cells available
+    const available = overrideMode
+        ? Array.from({ length: 9 }, (_, i) => i) // All cells available
         : newBoard.map((val, idx) => val === null ? idx : null).filter(val => val !== null);
     const winner = checkWinner();
     if (winner === "O") return { score: 10 };
@@ -268,12 +271,18 @@ function endGame(winner) {
         victoryElement.style.display = "inline";
         lossElement.style.display = "none";
         playSound("winSound");
-    } else {
+    } else if (winner === "O") {
         player2Score++;
         lossElement.textContent = `${isMultiplayer ? player2Name : "AI"} (O) Secures the Grid!`;
         lossElement.style.display = "inline";
         victoryElement.style.display = "none";
         playSound("loseSound");
+    } else if (isMultiplayer) {
+        // Tie condition for multiplayer mode
+        victoryElement.textContent = "Gridlock: It's a Tie!";
+        victoryElement.style.display = "inline";
+        lossElement.style.display = "none";
+        playSound("loseSound"); // Using lose sound for tie, can be changed if a specific tie sound is desired
     }
     updateDisplay();
 }

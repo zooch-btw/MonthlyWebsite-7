@@ -7,6 +7,8 @@ const maxMistakes = 6; // Maximum allowed mistakes before loss
 let gameActive = false; // Indicates if game is active
 let colorCycleInterval = null; // Tracks color cycling interval for hints
 let guessedElements = new Map(); // Tracks element guesses: name -> { correct: boolean }
+let hintsUsed = 0; // Tracks number of hints used in current game
+const maxHints = 3; // Maximum allowed hints per game
 
 // Full periodic table data (118 elements with symbol, name, and position)
 const elements = [
@@ -221,6 +223,7 @@ function startGame() {
     mistakes = 0; // Reset mistakes
     guessedLetters.clear(); // Clear guessed letters
     guessedElements.clear(); // Clear element guesses
+    hintsUsed = 0; // Reset hints used
     word = elements[Math.floor(Math.random() * elements.length)].name.toUpperCase(); // Pick random element name
     stopColorCycle(); // Clear any color cycling
 
@@ -229,6 +232,7 @@ function startGame() {
     setupKeyboard(); // Create letter buttons
     setupPeriodicTable(); // Build periodic table
     document.getElementById("hint").onclick = getHint; // Bind hint button
+    document.getElementById("hint").disabled = false; // Enable hint button at start
 }
 
 // Update game visuals
@@ -262,6 +266,9 @@ function updateDisplay() {
             el.classList.remove("correct", "incorrect", "disabled"); // Reset un-guessed elements
         }
     });
+
+    // Update hint button state
+    document.getElementById("hint").disabled = hintsUsed >= maxHints || !gameActive; // Disable if max hints reached or game inactive
 
     // Check win/loss conditions
     if (mistakes >= maxMistakes) {
@@ -357,15 +364,16 @@ function guessElement(name) {
 
 // Provide a hint by revealing a random unguessed letter
 function getHint() {
-    if (!gameActive) return; // Ignore if game inactive
+    if (!gameActive || hintsUsed >= maxHints) return; // Ignore if game inactive or max hints reached
     playSound("clickSound"); // Play click sound
+    hintsUsed++; // Increment hints used
     const unguessed = word.split('').filter(letter => !guessedLetters.has(letter));
     if (unguessed.length > 0) {
         const letter = unguessed[Math.floor(Math.random() * unguessed.length)]; // Pick random letter
         guessedLetters.add(letter); // Reveal letter
         updateDisplay(); // Refresh visuals
         const resultElement = document.getElementById("result");
-        resultElement.textContent = `Hint: Revealed '${letter}'`; // Show hint message
+        resultElement.textContent = `Hint: Revealed '${letter}' (${hintsUsed}/${maxHints})`; // Show hint message with count
         stopColorCycle(); // Clear existing color cycle
         cycleColors("result"); // Start color cycling for hint
     }
@@ -406,6 +414,7 @@ function resetGame() {
 
     // Reset all state
     score = 0; // Clear score
+    hintsUsed = 0; // Reset hints used
     resultElement.classList.remove("glowVictory", "glowLoss"); // Remove glows
     stopColorCycle(); // Clear color cycling
     resultElement.textContent = ""; // Clear result text
