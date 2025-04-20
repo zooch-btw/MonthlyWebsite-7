@@ -1,130 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- HTML5 document with English language for accessibility -->
 
 <head>
-    <!-- Page title -->
+    <!-- Page title displayed in browser tab -->
     <title>Neon Rock Paper Scissors</title>
-    <!-- Favicon (ensure favicon.ico exists in root or provide fallback) -->
+    <!-- Favicon for browser tab icon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <!-- Character encoding -->
+    <!-- UTF-8 encoding for character support -->
     <meta charset="utf-8" />
-    <!-- Responsive viewport -->
+    <!-- Responsive viewport for mobile compatibility -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!-- Bootstrap CSS for layout and styling -->
+    <!-- Bootstrap CSS for responsive grid and styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
     <!-- Orbitron font for cyberpunk aesthetic -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
+    <!-- Custom CSS for game-specific styling -->
     <link rel="stylesheet" href="rps.css">
 </head>
 
 <body>
-    <!-- Portal overlay for transitions -->
+    <!-- Portal overlay for page transition animations -->
     <div id="portal-overlay" class="portal-overlay">
+        <!-- Animated portal circle for visual effect -->
         <div class="portal-circle animate-portal-entry"></div>
     </div>
-    <!-- Player selection overlay -->
+    <!-- Player selection overlay for choosing game mode -->
     <div id="player-selection" class="portal-overlay">
+        <!-- Selection box for game mode options -->
         <div class="selection-box animate-fade-in">
-            <!-- Selection title -->
+            <!-- Title for game mode selection -->
             <h2 class="neon-text mb-4">Select Game Mode</h2>
+            <!-- Grid layout for mode buttons -->
             <div class="d-grid gap-3">
-                <!-- Two-player mode button -->
+                <!-- Button for two-player mode -->
                 <button id="multiPlayer" class="btn neon-btn animate-bounce mb-2">Two Players</button>
-                <!-- Single-player mode button -->
+                <!-- Button for single-player mode vs AI -->
                 <button id="singlePlayer" class="btn neon-btn animate-bounce mb-3">Single Player (vs AI)</button>
-                <!-- Difficulty options -->
+                <!-- Difficulty options for single-player mode -->
                 <div class="text-center mb-3">
+                    <!-- Easy difficulty option -->
                     <label class="neon-subtext me-3"><input type="radio" name="difficulty" value="easy" checked>
                         Easy</label>
+                    <!-- Medium difficulty option -->
                     <label class="neon-subtext me-3"><input type="radio" name="difficulty" value="medium">
                         Medium</label>
+                    <!-- Hard difficulty option -->
                     <label class="neon-subtext me-3"><input type="radio" name="difficulty" value="hard"> Hard</label>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Player 2 name input overlay -->
+    <!-- Overlay for entering Player 2 name in multiplayer mode -->
     <div id="player2-name" class="portal-overlay" style="display: none;">
+        <!-- Selection box for Player 2 name input -->
         <div class="selection-box animate-fade-in">
+            <!-- Prompt for Player 2 name -->
             <h2 class="neon-text mb-4">Enter Player 2 Name</h2>
+            <!-- Input field for Player 2 name -->
             <input type="text" id="player2NameInput" class="form-control mb-3" placeholder="Player 2 Name"
                 maxlength="20">
+            <!-- Error message for invalid name input -->
             <p id="player2NameError" class="neon-subtext mb-3" style="display: none;"></p>
+            <!-- Button to confirm Player 2 name -->
             <button id="confirmPlayer2Name" class="btn neon-btn animate-bounce">Confirm</button>
         </div>
     </div>
-    <!-- Main content -->
+    <!-- Main game content container -->
     <div id="main-content" class="container-fluid p-0" style="display: none;">
+        <!-- Full-height row for game layout -->
         <div class="row g-0 min-vh-100">
-            <!-- Game area -->
+            <!-- Game area, 9/12 columns on large screens -->
             <div class="col-lg-9 d-flex align-items-center justify-content-center p-3">
+                <!-- Centered game content -->
                 <div class="text-center">
-                    <!-- Game title -->
+                    <!-- Game title with neon effect and pulse animation -->
                     <h1 class="neon-text mb-4 animate-pulse">Neon Rock Paper Scissors</h1>
-                    <!-- Score display -->
+                    <!-- Score display section -->
                     <div class="row justify-content-center mb-4">
+                        <!-- Player 1 score display -->
                         <div class="col-5 text-center animate-fade-in">
                             <p id="player1Score" class="neon-text mb-3">Player 1: 0</p>
                         </div>
+                        <!-- Player 2/AI score display -->
                         <div class="col-5 text-center animate-fade-in">
                             <p id="player2Score" class="neon-text mb-3">Player 2: 0</p>
                         </div>
                     </div>
-                    <!-- Round info -->
+                    <!-- Round information display -->
                     <p id="roundInfo" class="neon-subtext mb-3 animate-fade-in">Round 1 of 5</p>
-                    <!-- Current turn -->
+                    <!-- Current turn indicator -->
                     <p id="turn" class="neon-text mb-3 animate-fade-in">Turn: Player 1</p>
-                    <!-- Choice buttons -->
+                    <!-- Choice buttons for rock, paper, scissors -->
                     <div class="d-flex justify-content-center gap-3 mb-4">
+                        <!-- Rock button with image -->
                         <button id="rock" class="btn neon-btn animate-bounce" disabled>
                             <img src="rock.png" alt="Rock" class="choice-img">
                         </button>
+                        <!-- Paper button with image -->
                         <button id="paper" class="btn neon-btn animate-bounce" disabled>
                             <img src="paper.png" alt="Paper" class="choice-img">
                         </button>
+                        <!-- Scissors button with image -->
                         <button id="scissors" class="btn neon-btn animate-bounce" disabled>
                             <img src="scissors.png" alt="Scissors" class="choice-img">
                         </button>
                     </div>
-                    <!-- Result display -->
-                    <div id="result" class="animate-slide-in"></div>
+                    <!-- Result display area with choice images -->
+                    <div id="result" class="animate-slide-in">
+                        <!-- Container for player choice images -->
+                        <div id="choiceImages" class="d-flex justify-content-center gap-4 mb-2"></div>
+                        <!-- Result text with glow effects -->
+                        <span id="resultText"></span>
+                    </div>
                 </div>
             </div>
-            <!-- Sidebar -->
+            <!-- Sidebar, 3/12 columns on large screens -->
             <div class="col-lg-3 sidebar p-3">
-                <!-- Sidebar title -->
+                <!-- Sidebar title with neon effect -->
                 <h2 class="neon-text mb-4 animate-pulse">Neon Nexus</h2>
-                <!-- Portal box for navigation -->
+                <!-- Win/loss counter display -->
+                <div id="win-loss-counter" class="win-loss-box mb-4">
+                    <!-- Counter title -->
+                    <p class="neon-subtext mb-2">Battle Records</p>
+                    <!-- Wins display -->
+                    <p id="rpsWins" class="neon-subtext mb-1">Wins: 0</p>
+                    <!-- Losses display -->
+                    <p id="rpsLosses" class="neon-subtext mb-1">Losses: 0</p>
+                </div>
+                <!-- Navigation portal box -->
                 <div id="neon-portal" class="portal-box">
+                    <!-- Portal box title -->
                     <p class="neon-subtext mb-2">Neon Portal</p>
+                    <!-- Navigation buttons -->
                     <div class="d-grid gap-2">
+                        <!-- Button to home page -->
                         <button onclick="portalTransition('index.html')"
                             class="btn neon-btn portal-btn animate-bounce">The Matrix</button>
+                        <!-- Button to Hangman -->
                         <button onclick="portalTransition('hangman.html')"
                             class="btn neon-btn portal-btn animate-bounce">Codebreaker</button>
+                        <!-- Button to Tic-Tac-Toe -->
                         <button onclick="portalTransition('tic-tac-toe.html')"
                             class="btn neon-btn portal-btn animate-bounce">Neon Grid</button>
                     </div>
                 </div>
-                <!-- Reset button -->
+                <!-- Reset game button -->
                 <div class="d-grid mt-4">
                     <button onclick="resetGame()" class="btn neon-btn animate-bounce">Reset Game</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Audio elements -->
+    <!-- Audio elements for sound effects -->
     <audio id="clickSound" src="click.wav" preload="auto"></audio>
     <audio id="winSound" src="win.wav" preload="auto"></audio>
     <audio id="loseSound" src="lose.wav" preload="auto"></audio>
     <audio id="actionSound" src="action.wav" preload="auto"></audio>
-    <!-- Bootstrap JS (for button interactions) -->
+    <!-- Bootstrap JS for interactivity -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-    <!-- Custom JavaScript -->
+    <!-- Custom JavaScript for game logic -->
     <script src="rps.js"></script>
 </body>
 

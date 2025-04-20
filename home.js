@@ -1,4 +1,4 @@
-// Initialize page on DOM load
+// Initialize page when DOM is fully loaded
 function initPage() {
     // Get DOM elements for overlay and content
     const portalOverlay = document.getElementById("portal-overlay"); // Portal animation overlay
@@ -37,7 +37,7 @@ function enterRealm() {
         userNameError.style.display = "none"; // Hide error if valid
     }
     // Store username and transition
-    localStorage.setItem("userName", userName); // Save to localStorage
+    localStorage.setItem("player1Name", userName); // Save to localStorage
     playSound("clickSound"); // Play click sound
     portalTransition("rps.html"); // Navigate to Rock Paper Scissors
 }

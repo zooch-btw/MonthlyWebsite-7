@@ -1,4 +1,4 @@
-/* Base styles */
+/* Base styles for the page */
 body {
     background: linear-gradient(135deg, #0d0015, #1a0033); /* Neon gradient background */
     font-family: 'Orbitron', sans-serif; /* Futuristic font */
@@ -9,14 +9,14 @@ body {
     overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
-/* Neon text effect */
+/* Neon text effect for titles */
 .neon-text {
     text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff, 0 0 20px #00ccff, 0 0 40px #00ccff; /* Cyan glow */
     color: #00ccff; /* Cyan color */
     font-weight: 700; /* Bold */
 }
 
-/* Neon subtext effect */
+/* Neon subtext effect for secondary text */
 .neon-subtext {
     text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff; /* Magenta glow */
     color: #ff00ff; /* Magenta color */
@@ -25,27 +25,32 @@ body {
 /* Victory text glow animation */
 @keyframes glowVictory {
     0% {
-        text-shadow: 0 0 10px #28a745, 0 0 20px #28a745, 0 0 30px #28a745, 0 0 40px #28a745;
+        text-shadow: 0 0 10px #28a745, 0 0 20px #28a745, 0 0 30px #28a745, 0 0 40px #28a745; /* Green glow start */
     }
     100% {
-        text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00, 0 0 50px #00ff00;
+        text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00, 0 0 50px #00ff00; /* Green glow end */
     }
 }
 
 /* Loss text glow animation */
 @keyframes glowLoss {
     0% {
-        text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000;
+        text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000; /* Red glow start */
     }
     100% {
-        text-shadow: 0 0 20px #ff3333, 0 0 30px #ff3333, 0 0 40px #ff3333, 0 0 50px #ff3333;
+        text-shadow: 0 0 20px #ff3333, 0 0 30px #ff3333, 0 0 40px #ff3333, 0 0 50px #ff3333; /* Red glow end */
     }
 }
 
 /* Apply glow animations to result text */
-#VictoryTxt {
-    animation: glowVictory 1.5s ease-in-out infinite alternate;
+#resultText.glowVictory {
+    animation: glowVictory 1.5s ease-in-out infinite alternate; /* Green glow for wins */
     color: #00ff00; /* Green text */
+}
+
+#resultText.glowLoss {
+    animation: glowLoss 1.5s ease-in-out infinite alternate; /* Red glow for losses */
+    color: #ff3333; /* Red text */
 }
 
 /* Neon button styling */
@@ -82,6 +87,13 @@ body {
     object-fit: contain; /* Maintain aspect ratio */
 }
 
+/* Result choice image styling for display */
+.result-choice-img {
+    width: 40px; /* Smaller size for result display */
+    height: 40px; /* Smaller size for result display */
+    object-fit: contain; /* Maintain aspect ratio */
+}
+
 /* Sidebar styling */
 .sidebar {
     background: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
@@ -99,13 +111,25 @@ body {
     width: 25%; /* Fixed width */
 }
 
-/* Sidebar title */
-.sidebar h2.neon-text {
-    margin-bottom: 20px; /* Space below */
-    text-align: center; /* Centered text */
+/* Win/loss counter box styling */
+.win-loss-box {
+    background: rgba(0, 0, 0, 0.9); /* Dark background */
+    border: 2px solid #ff00ff; /* Magenta border */
+    padding: 15px; /* Internal padding */
+    box-shadow: 0 0 20px #ff00ff; /* Magenta glow */
+    border-radius: 10px; /* Rounded corners */
+    transition: all 0.3s ease; /* Smooth transition */
+    width: 100%; /* Full width */
+    text-align: center; /* Center text */
 }
 
-/* Portal overlay */
+/* Win/loss box hover effect */
+.win-loss-box:hover {
+    box-shadow: 0 0 30px #00ccff; /* Cyan glow on hover */
+    transform: scale(1.05); /* Slight scale up */
+}
+
+/* Portal overlay for transitions */
 .portal-overlay {
     position: fixed; /* Fixed position */
     top: 0; /* Top-aligned */
@@ -119,7 +143,7 @@ body {
     z-index: 1000; /* Above all */
 }
 
-/* Portal circle */
+/* Portal circle animation */
 .portal-circle {
     width: 15vw; /* Responsive width */
     height: 15vw; /* Responsive height */
@@ -146,7 +170,7 @@ body {
     animation: swirl 2s linear infinite; /* Continuous rotation */
 }
 
-/* Selection box */
+/* Selection box for mode/name selection */
 .selection-box {
     background: rgba(0, 0, 0, 0.9); /* Dark background */
     border: 2px solid #ff00ff; /* Magenta border */
@@ -164,7 +188,7 @@ body {
     transform: scale(1.05); /* Slight scale up */
 }
 
-/* Portal box */
+/* Portal box for navigation */
 .portal-box {
     background: rgba(0, 0, 0, 0.9); /* Dark background */
     border: 2px solid #ff00ff; /* Magenta border */
@@ -208,7 +232,7 @@ body {
     margin-top: 20px; /* Space above */
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for smaller screens */
 @media (max-width: 991px) {
     .sidebar {
         position: static; /* Normal flow */
@@ -222,19 +246,39 @@ body {
     .neon-subtext { font-size: 0.9rem; } /* Smaller subtext */
     .neon-btn { padding: 8px 15px; font-size: 0.8rem; } /* Smaller buttons */
     .choice-img { width: 40px; height: 40px; } /* Smaller images */
+    .result-choice-img { width: 30px; height: 30px; } /* Smaller result images */
 }
 
 /* Animation keyframes */
-@keyframes swirl { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes pulse { 0%, 100% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; } 50% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff; } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-@keyframes portalEntry { 0% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { transform: scale(3) rotate(720deg); opacity: 1; } 100% { transform: scale(20) rotate(1440deg); opacity: 0; } }
+@keyframes swirl { 
+    0% { transform: rotate(0deg); } 
+    100% { transform: rotate(360deg); } 
+} /* Portal swirl effect */
+@keyframes pulse { 
+    0%, 100% { text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff; } 
+    50% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff; } 
+} /* Neon pulse effect */
+@keyframes fadeIn { 
+    from { opacity: 0; } 
+    to { opacity: 1; } 
+} /* Fade-in animation */
+@keyframes slideIn { 
+    from { transform: translateY(20px); opacity: 0; } 
+    to { transform: translateY(0); opacity: 1; } 
+} /* Slide-in animation */
+@keyframes bounce { 
+    0%, 100% { transform: translateY(0); } 
+    50% { transform: translateY(-5px); } 
+} /* Bounce effect */
+@keyframes portalEntry { 
+    0% { transform: scale(0) rotate(0deg); opacity: 0; } 
+    50% { transform: scale(3) rotate(720deg); opacity: 1; } 
+    100% { transform: scale(20) rotate(1440deg); opacity: 0; } 
+} /* Portal entry animation */
 
 /* Animation classes */
-.animate-pulse { animation: pulse 2s infinite; }
-.animate-fade-in { animation: fadeIn 1s ease-in; }
-.animate-slide-in { animation: slideIn 0.8s ease-out; }
-.animate-bounce { animation: bounce 1.5s infinite; }
-.animate-portal-entry { animation: portalEntry 2s ease forwards; }
+.animate-pulse { animation: pulse 2s infinite; } /* Apply pulse animation */
+.animate-fade-in { animation: fadeIn 1s ease-in; } /* Apply fade-in animation */
+.animate-slide-in { animation: slideIn 0.8s ease-out; } /* Apply slide-in animation */
+.animate-bounce { animation: bounce 1.5s infinite; } /* Apply bounce animation */
+.animate-portal-entry { animation: portalEntry 2s ease forwards; } /* Apply portal entry animation */
