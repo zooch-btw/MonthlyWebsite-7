@@ -1,7 +1,9 @@
 // Game state variables
 let board = Array(9).fill(null); // 3x3 board as a 1D array
-let player1Score = 0; // Player 1 (X) score
-let player2Score = 0; // Player 2 or AI (O) score
+let player1Score = 0; // Player 1 (X) score, per session
+let player2Score = 0; // Player 2 or AI (O) score, per session
+let player1Wins = parseInt(localStorage.getItem("tttPlayer1Wins")) || 0; // Persistent Player 1 wins
+let player2Wins = parseInt(localStorage.getItem("tttPlayer2Wins")) || 0; // Persistent Player 2/AI wins
 let currentPlayer = "X"; // Current player, X starts
 let gameActive = false; // Indicates if game is active
 let isMultiplayer = false; // Tracks multiplayer mode
@@ -14,6 +16,12 @@ const winningCombos = [ // Winning combinations
     [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
     [0, 4, 8], [2, 4, 6] // Diagonals
 ];
+
+// Update win/loss counter display
+function updateWinLossCounter() {
+    document.getElementById("tttPlayer1Wins").textContent = `Player X Wins: ${player1Wins}`;
+    document.getElementById("tttPlayer2Wins").textContent = `Player O Wins: ${player2Wins}`;
+}
 
 // Initialize page on DOM load
 function initPage() {
@@ -39,6 +47,7 @@ function initPage() {
         playSound("clickSound");
         updateBoard(); // Update board visuals to reflect override mode
     });
+    updateWinLossCounter(); // Initialize win/loss display
 }
 
 // Prompt for Player 2 name in multiplayer mode
@@ -93,6 +102,7 @@ function startGame() {
     updateDisplay();
     createBoard();
     cycleColors("result");
+    updateWinLossCounter(); // Update win/loss display on game start
 }
 
 // Update game display
@@ -267,12 +277,16 @@ function endGame(winner) {
     const lossElement = document.getElementById("LossTxt");
     if (winner === "X") {
         player1Score++;
+        player1Wins++;
+        localStorage.setItem("tttPlayer1Wins", player1Wins);
         victoryElement.textContent = `${player1Name} (X) Secures the Grid!`;
         victoryElement.style.display = "inline";
         lossElement.style.display = "none";
         playSound("winSound");
     } else if (winner === "O") {
         player2Score++;
+        player2Wins++;
+        localStorage.setItem("tttPlayer2Wins", player2Wins);
         lossElement.textContent = `${isMultiplayer ? player2Name : "AI"} (O) Secures the Grid!`;
         lossElement.style.display = "inline";
         victoryElement.style.display = "none";
@@ -282,9 +296,10 @@ function endGame(winner) {
         victoryElement.textContent = "Gridlock: It's a Tie!";
         victoryElement.style.display = "inline";
         lossElement.style.display = "none";
-        playSound("loseSound"); // Using lose sound for tie, can be changed if a specific tie sound is desired
+        playSound("loseSound"); // Using lose sound for tie
     }
     updateDisplay();
+    updateWinLossCounter(); // Update win/loss display after game ends
 }
 
 // Reset game

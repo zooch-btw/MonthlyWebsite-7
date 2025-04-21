@@ -1,5 +1,5 @@
 // Game state variables
-let player1Score = 0; // Tracks Player  Wins for Player 1
+let player1Score = 0; // Tracks Player Wins for Player 1
 let player2Score = 0; // Tracks Player 2/AI score
 let currentPlayer = 1; // Tracks current player (1 or 2)
 let player1Choice = null; // Stores Player 1's choice
@@ -123,8 +123,9 @@ function updateDisplay() {
     // Update score displays
     document.getElementById("player1Score").textContent = `${player1Name}: ${player1Score}`; // Player 1 score
     document.getElementById("player2Score").textContent = `${isMultiplayer ? player2Name : "AI"}: ${player2Score}`; // Player 2/AI score
-    // Update round information
-    document.getElementById("roundInfo").textContent = `Round ${currentRound} of ${maxRounds}`; // Current round
+    // Update round information, capping at maxRounds
+    const displayRound = Math.min(currentRound, maxRounds); // Cap at maxRounds
+    document.getElementById("roundInfo").textContent = `Round ${displayRound} of ${maxRounds}`; // Current round
     // Update turn indicator
     document.getElementById("turn").textContent = `Turn: ${currentPlayer === 1 ? player1Name : (isMultiplayer ? player2Name : "AI")}`; // Current player
     // Enable/disable choice buttons based on game state

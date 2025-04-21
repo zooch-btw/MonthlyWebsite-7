@@ -58,18 +58,9 @@
       <div class="col-lg-3 sidebar p-3">
         <!-- Sidebar title with neon effect -->
         <h2 class="neon-text mb-4 animate-pulse">Neon Nexus</h2>
-        <!-- Win/loss counter display -->
-        <div id="win-loss-counter" class="win-loss-box mb-4">
-          <!-- Counter title -->
-          <p class="neon-subtext mb-2">Battle Records</p>
-          <!-- Wins display -->
-          <p id="hangmanWins" class="neon-subtext mb-1">Wins: 0</p>
-          <!-- Losses display -->
-          <p id="hangmanLosses" class="neon-subtext mb-1">Losses: 0</p>
-        </div>
         <!-- Scrollable periodic table -->
         <div id="periodic-table" class="periodic-table scrollable mb-4"></div>
-        <!-- Navigation portal box -->
+        <!-- Navigation portal box with win/loss counter -->
         <div id="neon-portal" class="portal-box mb-4">
           <!-- Portal title -->
           <p class="neon-subtext mb-2">Neon Portal</p>
@@ -85,6 +76,10 @@
             <button onclick="portalTransition('rps.html')" class="btn neon-btn portal-btn animate-bounce">Pixel
               Duel</button>
           </div>
+          <!-- Win/loss counter -->
+          <p class="neon-subtext mb-2 mt-3">Battle Records</p>
+          <p id="hangmanWins" class="neon-subtext mb-1">Wins: 0</p>
+          <p id="hangmanLosses" class="neon-subtext mb-1">Losses: 0</p>
         </div>
         <!-- Reset game button -->
         <div class="d-grid">
