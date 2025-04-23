@@ -15,6 +15,7 @@ const choices = ["rock", "paper", "scissors"]; // Possible game choices
 let colorCycleInterval = null; // Tracks color cycling interval for ties
 let rpsWins = parseInt(localStorage.getItem("rpsWins")) || 0; // Tracks total wins, persisted in localStorage
 let rpsLosses = parseInt(localStorage.getItem("rpsLosses")) || 0; // Tracks total losses, persisted in localStorage
+let rock = document.getElementById('imgs/')
 
 // Initialize page on DOM load
 function initPage() {
@@ -195,8 +196,8 @@ function determineWinner() {
 
     // Display player choices with images
     choiceImages.innerHTML = `
-        <span>${player1Name} picked <img src="${player1Choice}.png" alt="${player1Choice}" class="result-choice-img"></span>
-        <span>${isMultiplayer ? player2Name : "AI"} picked <img src="${player2Choice}.png" alt="${player2Choice}" class="result-choice-img"></span>
+        <span>${player1Name} picked <img src="${player1Choice}.jpg" alt="${player1Choice}" class="result-choice-img"></span>
+        <span>${isMultiplayer ? player2Name : "AI"} picked <img src="${player2Choice}.jpg" alt="${player2Choice}" class="result-choice-img"></span>
     `;
 
     // Determine round outcome
