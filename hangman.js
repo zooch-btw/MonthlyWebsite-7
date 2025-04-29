@@ -1,7 +1,7 @@
 // Game state variables
-let score = 0; // Tracks player's score
-let wins = parseInt(localStorage.getItem("hangmanWins")) || 0; // Persistent wins
-let losses = parseInt(localStorage.getItem("hangmanLosses")) || 0; // Persistent losses
+let score = parseInt(sessionStorage.getItem("hangmanScore")) || 0; // Tracks player's score, persists in session
+let wins = 0; // Tracks wins, starts at 0 on page reload
+let losses = 0; // Tracks losses, starts at 0 on page reload
 let word = ''; // Current element name (uppercase)
 let guessedLetters = new Set(); // Tracks guessed letters
 let mistakes = 0; // Tracks incorrect letter guesses
@@ -195,17 +195,25 @@ const hangmanStages = [
     =========` // Right leg added (game over)
 ];
 
-// Update win/loss counter display
+// Updates the win/loss counter display in the UI
 function updateWinLossCounter() {
-    document.getElementById("hangmanWins").textContent = `Wins: ${wins}`;
-    document.getElementById("hangmanLosses").textContent = `Losses: ${losses}`;
+    const winsElement = document.getElementById("hangmanWins");
+    const lossesElement = document.getElementById("hangmanLosses");
+    if (winsElement) winsElement.textContent = `Wins: ${wins}`; // Update wins display
+    if (lossesElement) lossesElement.textContent = `Losses: ${losses}`; // Update losses display
 }
 
-// Initialize page when DOM is fully loaded
+// Initializes the page when DOM is fully loaded
 function initPage() {
     // Get key DOM elements
     const portalOverlay = document.getElementById("portal-overlay");
     const mainContent = document.getElementById("main-content");
+
+    // Ensure DOM elements exist
+    if (!portalOverlay || !mainContent) {
+        console.error("Required DOM elements missing.");
+        return;
+    }
 
     // Set initial visibility states
     portalOverlay.style.display = "flex"; // Show portal overlay
@@ -227,7 +235,7 @@ function initPage() {
     updateWinLossCounter(); // Initialize win/loss display
 }
 
-// Start a new game
+// Starts a new game
 function startGame() {
     // Reset game state
     gameActive = true; // Enable gameplay
@@ -243,57 +251,69 @@ function startGame() {
     updateDisplay(); // Refresh game visuals
     setupKeyboard(); // Create letter buttons
     setupPeriodicTable(); // Build periodic table
-    document.getElementById("hint").onclick = getHint; // Bind hint button
-    document.getElementById("hint").disabled = false; // Enable hint button at start
-    updateWinLossCounter(); // Update win/loss display on game start
+    const hintButton = document.getElementById("hint");
+    if (hintButton) hintButton.onclick = getHint; // Bind hint button
+    if (hintButton) hintButton.disabled = false; // Enable hint button at start
+    updateWinLossCounter(); // Update win/loss display
 }
 
-// Update game visuals
+// Updates all game visuals (score, hangman, word, keyboard, periodic table)
 function updateDisplay() {
     // Update score display
-    document.getElementById("score").textContent = `Score: ${score}`;
+    const scoreElement = document.getElementById("score");
+    if (scoreElement) {
+        scoreElement.textContent = `Score: ${score}`;
+        sessionStorage.setItem("hangmanScore", score); // Persist score in session
+    }
 
     // Update hangman figure based on mistakes
-    document.getElementById("hangman").textContent = hangmanStages[mistakes];
+    const hangmanElement = document.getElementById("hangman");
+    if (hangmanElement) hangmanElement.textContent = hangmanStages[mistakes];
 
     // Update word display with guessed/unguessed letters
-    let wordDisplay;
-    if (revealTargetWord) {
-        // Display the full target word when revealed
-        wordDisplay = word.split('').join(' ');
-    } else {
-        // Display the word with guessed letters or underscores
-        wordDisplay = word
-            .split('')
-            .map(letter => (guessedLetters.has(letter) ? letter : '_'))
-            .join(' ');
+    const wordElement = document.getElementById("word");
+    if (wordElement) {
+        let wordDisplay;
+        if (revealTargetWord) {
+            wordDisplay = word.split('').join(' '); // Display full word
+        } else {
+            wordDisplay = word
+                .split('')
+                .map(letter => (guessedLetters.has(letter) ? letter : '_'))
+                .join(' '); // Show guessed letters or underscores
+        }
+        wordElement.textContent = wordDisplay;
     }
-    document.getElementById("word").textContent = wordDisplay;
 
     // Update keyboard button states
-    document.querySelectorAll(".keyboard button").forEach(btn => {
+    const keyboardButtons = document.querySelectorAll(".keyboard button");
+    keyboardButtons.forEach(btn => {
         const letter = btn.textContent;
-        btn.disabled = guessedLetters.has(letter) || !gameActive; // Disable guessed letters or if game inactive
+        btn.disabled = guessedLetters.has(letter) || !gameActive; // Disable guessed or if inactive
     });
 
     // Update periodic table highlights
-    document.querySelectorAll(".element:not(.empty)").forEach(el => {
+    const periodicElements = document.querySelectorAll(".element:not(.empty)");
+    periodicElements.forEach(el => {
         const name = el.dataset.name.toUpperCase();
         if (guessedElements.has(name)) {
             el.classList.add(guessedElements.get(name).correct ? "correct" : "incorrect"); // Apply highlight
             el.classList.add("disabled"); // Disable guessed elements
         } else {
-            el.classList.remove("correct", "incorrect", "disabled"); // Reset un-guessed elements
+            el.classList.remove("correct", "incorrect", "disabled"); // Reset un-guessed
         }
     });
 
     // Update hint button state
-    document.getElementById("hint").disabled = hintsUsed >= maxHints || !gameActive; // Disable if max hints reached or game inactive
+    const hintButton = document.getElementById("hint");
+    if (hintButton) hintButton.disabled = hintsUsed >= maxHints || !gameActive; // Disable if max hints or inactive
 }
 
-// Setup keyboard with letter buttons
+// Sets up the on-screen keyboard with letter buttons
 function setupKeyboard() {
     const keyboard = document.getElementById("keyboard");
+    if (!keyboard) return;
+
     keyboard.innerHTML = ''; // Clear existing buttons
     for (let i = 65; i <= 90; i++) { // Loop through A-Z
         const letter = String.fromCharCode(i);
@@ -305,15 +325,17 @@ function setupKeyboard() {
     }
 }
 
-// Setup scrollable periodic table
+// Sets up the scrollable periodic table
 function setupPeriodicTable() {
     const table = document.getElementById("periodic-table");
+    if (!table) return;
+
     table.innerHTML = ''; // Clear existing content
     const grid = document.createElement("div");
     grid.className = "periodic-table-grid"; // Grid container
 
     // Create a map for positioning elements
-    const positions = new Array(10).fill().map(() => new Array(19).fill(null)); // 10 rows, 19 cols (1-based indexing)
+    const positions = new Array(10).fill().map(() => new Array(19).fill(null)); // 10 rows, 19 cols (1-based)
 
     // Place elements in their correct grid positions
     elements.forEach(element => {
@@ -342,9 +364,9 @@ function setupPeriodicTable() {
     table.appendChild(grid); // Add grid to table container
 }
 
-// Handle letter guess via keyboard
+// Handles a letter guess via keyboard
 function handleGuess(letter) {
-    if (!gameActive || guessedLetters.has(letter) || revealTargetWord) return; // Ignore if inactive, already guessed, or target word revealed
+    if (!gameActive || guessedLetters.has(letter) || revealTargetWord) return; // Ignore if inactive, guessed, or word revealed
     playSound("actionSound"); // Play action sound
     guessedLetters.add(letter); // Record guess
 
@@ -359,35 +381,33 @@ function handleGuess(letter) {
 
     // Check win/loss conditions
     if (mistakes >= maxMistakes) {
-        endGame(false); // Game over if max mistakes reached
+        endGame(false); // Game over if max mistakes
     } else if (word.split('').every(letter => guessedLetters.has(letter))) {
         endGame(true); // Win if all letters guessed
     }
 }
 
-// Guess an entire element name via periodic table
+// Handles guessing an entire element name via periodic table
 function guessElement(name) {
     if (!gameActive) return; // Ignore if game inactive
     playSound("actionSound"); // Play action sound
     gameActive = false; // Disable further guessing
-    revealTargetWord = true; // Set flag to reveal target word
-    guessedElements.set(name, { correct: name === word }); // Record guess with correctness
+    revealTargetWord = true; // Reveal target word
+    guessedElements.set(name, { correct: name === word }); // Record guess
     if (name === word) {
-        // Correct guess: proceed to win
         playSound("winSound"); // Play win sound
         endGame(true); // End game with win
     } else {
-        // Incorrect guess: show target word and lose
         mistakes = maxMistakes; // Set to max mistakes for loss
         playSound("loseSound"); // Play error sound
         endGame(false); // End game with loss
     }
-    updateDisplay(); // Refresh visuals immediately to show target word
+    updateDisplay(); // Show target word immediately
 }
 
-// Provide a hint by revealing a random unguessed letter
+// Provides a hint by revealing a random unguessed letter
 function getHint() {
-    if (!gameActive || hintsUsed >= maxHints || revealTargetWord) return; // Ignore if game inactive, max hints reached, or target word revealed
+    if (!gameActive || hintsUsed >= maxHints || revealTargetWord) return; // Ignore if inactive, max hints, or word revealed
     playSound("clickSound"); // Play click sound
     hintsUsed++; // Increment hints used
     const unguessed = word.split('').filter(letter => !guessedLetters.has(letter));
@@ -396,33 +416,40 @@ function getHint() {
         guessedLetters.add(letter); // Reveal letter
         updateDisplay(); // Refresh visuals
         const resultElement = document.getElementById("result");
-        resultElement.textContent = `Hint: Revealed '${letter}' (${hintsUsed}/${maxHints})`; // Show hint message with count
-        stopColorCycle(); // Clear existing color cycle
-        cycleColors("result"); // Start color cycling for hint
+        if (resultElement) {
+            resultElement.textContent = `Hint: Revealed '${letter}' (${hintsUsed}/${maxHints})`; // Show hint message
+            stopColorCycle(); // Clear existing color cycle
+            cycleColors("result"); // Start color cycling
+        }
     }
 }
 
-// End the game (win or loss)
+// Ends the game (win or loss)
 function endGame(won) {
     gameActive = false; // Disable gameplay
     const resultElement = document.getElementById("result");
-    stopColorCycle(); // Clear color cycling
-    resultElement.classList.remove("glowVictory", "glowLoss"); // Remove glow classes
+    if (resultElement) {
+        stopColorCycle(); // Clear color cycling
+        resultElement.classList.remove("glowVictory", "glowLoss"); // Remove glow classes
+    }
 
     if (won) {
         score += 10; // Award points for win
         wins++; // Increment wins
-        localStorage.setItem("hangmanWins", wins); // Save wins
-        resultElement.textContent = `Success! Element: ${word}`; // Show win message
-        resultElement.classList.add("glowVictory"); // Apply green glow
+        sessionStorage.setItem("hangmanWins", wins); // Save wins in session
+        if (resultElement) {
+            resultElement.textContent = `Success! Element: ${word}`; // Show win message
+            resultElement.classList.add("glowVictory"); // Apply green glow
+        }
         playSound("winSound"); // Play win sound
-        // Ensure correct element is highlighted
-        guessedElements.set(word, { correct: true });
+        guessedElements.set(word, { correct: true }); // Highlight correct element
     } else {
         losses++; // Increment losses
-        localStorage.setItem("hangmanLosses", losses); // Save losses
-        resultElement.textContent = `Game Over! Element was: ${word}`; // Show loss message
-        resultElement.classList.add("glowLoss"); // Apply red glow
+        sessionStorage.setItem("hangmanLosses", losses); // Save losses in session
+        if (resultElement) {
+            resultElement.textContent = `Game Over! Element was: ${word}`; // Show loss message
+            resultElement.classList.add("glowLoss"); // Apply red glow
+        }
         playSound("loseSound"); // Play error sound
     }
 
@@ -430,17 +457,15 @@ function endGame(won) {
     updateWinLossCounter(); // Update win/loss display
 }
 
-// Reset game state
+// Resets game state without resetting score or wins/losses
 function resetGame() {
     playSound("clickSound"); // Play click sound
     const portalOverlay = document.getElementById("portal-overlay");
     const mainContent = document.getElementById("main-content");
     const resultElement = document.getElementById("result");
+    if (!portalOverlay || !mainContent || !resultElement) return;
 
-    // Reset all state
-    score = 0; // Clear score
-    hintsUsed = 0; // Reset hints used
-    revealTargetWord = false; // Reset target word reveal flag
+    // Clear result display
     resultElement.classList.remove("glowVictory", "glowLoss"); // Remove glows
     stopColorCycle(); // Clear color cycling
     resultElement.textContent = ""; // Clear result text
@@ -455,7 +480,7 @@ function resetGame() {
     }, 2000); // Match portal animation duration
 }
 
-// Play audio sound with error handling
+// Plays audio sound with error handling
 function playSound(soundId) {
     const sound = document.getElementById(soundId);
     if (sound) {
@@ -464,9 +489,10 @@ function playSound(soundId) {
     }
 }
 
-// Cycle colors for hint messages
+// Cycles colors for hint messages
 function cycleColors(elementId) {
     const element = document.getElementById(elementId);
+    if (!element) return;
     const colors = ["#00ccff", "#ff00ff", "#00ff00", "#ffff00", "#ff6600"]; // Neon color palette
     let index = 0; // Current color index
 
@@ -481,26 +507,29 @@ function cycleColors(elementId) {
     }, 700);
 }
 
-// Stop color cycling and reset style
+// Stops color cycling and resets style
 function stopColorCycle() {
     if (colorCycleInterval) {
         clearInterval(colorCycleInterval); // Clear interval
         colorCycleInterval = null; // Reset tracker
         const resultElement = document.getElementById("result");
-        resultElement.style.color = "#00ccff"; // Reset to cyan
-        resultElement.style.textShadow = "0 0 5px #00ccff, 0 0 10px #00ccff, 0 0 20px #00ccff"; // Reset glow
+        if (resultElement) {
+            resultElement.style.color = "#00ccff"; // Reset to cyan
+            resultElement.style.textShadow = "0 0 5px #00ccff, 0 0 10px #00ccff, 0 0 20px #00ccff"; // Reset glow
+        }
     }
 }
 
-// Handle navigation to other pages
+// Handles navigation to other pages
 function portalTransition(url) {
     const portalOverlay = document.getElementById("portal-overlay");
     const mainContent = document.getElementById("main-content");
+    if (!portalOverlay || !mainContent) return;
     playSound("clickSound"); // Play click sound
     mainContent.style.display = "none"; // Hide game
     portalOverlay.style.display = "flex"; // Show portal
     setTimeout(() => window.location.href = url, 2000); // Redirect after 2s
 }
 
-// Initialize page on DOM load
+// Initializes page on DOM load
 document.addEventListener("DOMContentLoaded", initPage);
